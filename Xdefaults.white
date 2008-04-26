@@ -1,0 +1,6 @@
+xterm*background: white
+xterm*foreground: black
+xterm*highlightColor: #999999
+XTerm*termName: xterm
+
+#xterm*font: -*-times-medium-r-*-*-12-*-*-*-*-*-iso10646-*

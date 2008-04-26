@@ -1,0 +1,5 @@
+xterm*background: black
+xterm*foreground: #55ffff
+xterm*highlightColor: #0000ff
+XTerm*termName: xterm
+

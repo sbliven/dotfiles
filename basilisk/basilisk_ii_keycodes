@@ -1,0 +1,141 @@
+# /usr/share/BasiliskII/keycodes
+#
+# Basilisk II (C) 1997-2001 Christian Bauer
+#
+# This file is used to translate the (server-specific) X11 keycodes to Mac
+# keycodes depending on the X11 server being used.
+#
+# The format of this file is as follows:
+#
+# <vendor string>
+# <X11 keycode> <Mac keycode>
+# <X11 keycode> <Mac keycode>
+# <X11 keycode> <Mac keycode>
+# ...
+# <vendor string>
+# <X11 keycode> <Mac keycode>
+# <X11 keycode> <Mac keycode>
+# ...
+#
+# The "vendor string" must match the first part of the X11 server vendor
+# description as reported by ServerVendor(). If a match is found, the keycode
+# translation table is constructed from the following lines. Each line
+# contains an X11 keycode followed by its associated Mac keycode. Both
+# keycodes have to be given in decimal. Lines beginning with "#" or ";" are
+# treated as comments and ignored.
+#
+
+#
+# MacX (keycodes depend on Mac keymap, so this doesn't make much sense...)
+#
+The XFree86 Project, Inc
+# Problem mappings:
+# Esc, Eject, Backspace, Ctrl, Fn, Enter
+
+8	0	# A
+9	1	# S
+10	2	# D
+11	3	# F
+12	4	# H
+13	5	# G
+14	6	# Z
+15	7	# X
+16	8	# C
+17	9	# V
+# 18	10	# ` (Apple Keyboard II)
+19	11	# B
+20	12	# Q
+21	13	# W
+22	14	# E
+23	15	# R
+24	16	# Y
+25	17	# T
+26	18	# 1
+27	19	# 2
+28	20	# 3
+29	21	# 4
+30	22	# 6
+31	23	# 5
+32	24	# =
+33	25	# 9
+34	26	# 7
+35	27	# -
+36	28	# 8
+37	29	# 0
+38	30	# ]
+39	31	# O
+40	32	# U
+41	33	# [
+42	34	# I
+43	35	# P
+44	36	# Return
+45	37	# L
+46	38	# J
+47	39	# '
+48	40	# K
+49	41	# ;
+50	42	# \
+51	43	# ,
+52	44	# /
+53	45	# N
+54	46	# M
+55	47	# .
+56	48	# Tab
+57	49	# Space
+58	50	# International ` (Apple Extended Keyboard II)
+59	51	# Backspace
+# 60	52 # Enter
+60	126	# Enter -> Restart
+61	53	# Esc
+# 63	55	# Command
+64	56	# Shift
+# 65	57	# Caps Lock?
+66	58	# Option
+67	55 # Ctl -> Cmd
+131	59	# Cursor Left	# Reports as 123
+132	60	# Cursor Right	# Reports as 124
+133	61	# Cursor Down	# Reports as 125
+134	62	# Cursor Up		# Reports as 126
+73	65	# KP .
+75	67	# KP *
+77	69	# KP +
+79	71	# Num Lock
+83	75	# KP /
+84	76	# KP Enter
+86	78	# KP -
+89	81	# KP =
+90	82	# KP 0
+91	83	# KP 1
+92	84	# KP 2
+93	85	# KP 3
+94	86	# KP 4
+95	87	# KP 5
+96	88	# KP 6
+97	89	# KP 7
+99	91	# KP 8
+100	92	# KP 9
+104	96	# F5
+105	97	# F6
+106	98	# F7
+107	99	# F3
+108	100	# F8
+109	101	# F9
+111	103	# F11
+# 113	105	# F13/PrintScrn
+# 115	107	# F14/Scroll Lock
+117	109	# F10
+119	111	# F12
+# 121	113	# F15/Pause
+122	114	# Help/Insert
+123	115	# Home
+124	116	# Page Up
+125	117	# Delete
+126	118	# F4
+127	119	# End
+128	120	# F2
+129	121	# Page Down
+130	122	# F1
+# -	123	# ?	# Reports as 60
+# -	124	# ?	# Reports as 61
+# -	125	# ?	# Reports as 62
+# -	126	# Restart

@@ -9,9 +9,16 @@ export PROFILE='~/.profile'
 
 # Include fink paths
 test -r /sw/bin/init.sh && . /sw/bin/init.sh
-export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:$PATH"
+export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
 export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:$MANPATH"
 export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
+
+#tomcat settings
+CATALINA_HOME=/usr/local/tomcat
+export JAVA_HOME=/usr
+export JRE_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/
+alias tomcat_startup="$CATALINA_HOME/bin/startup.sh"
+alias tomcat_shutdown="$CATALINA_HOME/bin/shutdown.sh"
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8

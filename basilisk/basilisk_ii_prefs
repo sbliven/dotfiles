@@ -1,0 +1,43 @@
+extfs /Apps_classic/
+screen win/1024/786/8
+screen win/800/600/8
+# screen win/512/342/8
+seriala 
+serialb 
+floppy /dev/disk2
+rom /Apps_classic/IIsi.rom
+bootdrive 0
+bootdriver 0
+ramsize 8388608
+frameskip 0
+modelid 5
+cpu 3
+fpu false
+nocdrom false
+nosound false
+noclipconversion false
+nogui true
+keycodes true
+mousewheelmode 1
+mousewheellines 3
+keycodefile /Users/blivens/.basilisk_ii_keycodes
+disk /Apps_classic/HardDrives/chicken.hfv
+disk /Apps_classic/HardDrives/Starterdisk.hfv
+disk /Apps_classic/HardDrives/documents.hfv
+# disk /Apps_classic/games/crystalquest.dsk
+# disk /Apps_classic/games/games.dsk
+# disk /Apps_classic/games/glider4.dsk
+# disk /Apps_classic/games/loderunner.dsk
+# disk /Apps_classic/games/oregontrail.dsk
+# disk /Apps_classic/games/puzzle_games.dsk
+# disk /Apps_classic/games/blank.dsk
+# disk /Apps_classic/games/simant_bw.dsk
+# disk /Apps_classic/games/simant_c.dsk
+# disk /Apps_classic/games/spectre.dsk
+# disk /Apps_classic/games/supermunchers.dsk
+# disk /Apps_classic/games/tetris.dsk
+# disk /Apps_classic/games/Pheta 2.7.dsk
+# disk /Apps_classic/games/SimCity1.dsk
+# disk /Apps_classic/games/SimCity2.dsk
+disk /Apps_classic/games/macfootball.dsk
+
