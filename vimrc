@@ -8,10 +8,10 @@ set smartindent "indent intelligently around { and such
 "do not place comments all the way left:
 "set cindent "c-style smart indent
 "set indentexpr= "custom indent expression
-set tabstop=3
-set shiftwidth=3
+set tabstop=4
+set shiftwidth=4
 set smarttab "use shiftwidth for tab distance, not tabstop
-"set expandtab "insert spaces instead of real tabs.
+set expandtab "insert spaces instead of real tabs.
 
 
 "windowing options
