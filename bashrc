@@ -1,16 +1,14 @@
-echo "Running 	~/.bashrc"
-
-# run the profile, if it hasn't yet
-if [[ ! $PROFILE ]]; then
-    . ~/.profile
-else
-    echo "$PROFILE already run"
-fi
+echo "`date`  Running .bashrc" #|tee -a /Users/blivens/startup_scripts.log
 
 # history
 export HISTIGNORE="fg:bg:exit"
 set cmdhist
 set show-all-if-ambiguous on
+
+#set some bash settings
+shopt -s checkwinsize
+shopt -s cdspell
+shopt -s hostcomplete
 
 # hostname autocompletion
 # taken from Mark Liyange <www.entropy.ch>
@@ -28,4 +26,5 @@ complete scp 'p/*/`scp_completions`/'
 
 #export PS1='\[\e]0;\u@\h \w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
 export PS1='\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\$ '
+
 
