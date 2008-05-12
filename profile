@@ -1,10 +1,10 @@
-echo "Running ~/.profile"
+echo "`date`  Running .profile" #>> /Users/blivens/startup_scripts.log
 /sw/bin/fortune
 
 
 # This file doesn't get called when starting an X11 terminal, so set
 # a variable to allow later scripts (.bashrc) to determine if it has been run
-export PROFILE='~/.profile'
+# export PROFILE='~/.profile'
 # Problem: ENV transfered to new terms, but other changes (ie alias) need to be rerun
 
 # Include fink paths
@@ -12,6 +12,10 @@ test -r /sw/bin/init.sh && . /sw/bin/init.sh
 export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
 export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:$MANPATH"
 export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
+
+if [ -e `which vim` ]; then
+	export EDITOR=`which vim`
+fi
 
 #tomcat settings
 CATALINA_HOME=/usr/local/tomcat
