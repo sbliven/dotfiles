@@ -1,0 +1,7 @@
+# ~/.profile.local
+# Created by Spencer Bliven
+# 
+# This file provides settings specific to dante.u.washington.edu
+
+export PATH="$HOME/mysql/bin:$PATH"
+export MANPATH="$HOME/mysql/man:$MANPATH"
