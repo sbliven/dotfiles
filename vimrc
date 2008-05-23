@@ -13,6 +13,9 @@ set shiftwidth=4
 set smarttab "use shiftwidth for tab distance, not tabstop
 set expandtab "insert spaces instead of real tabs.
 
+"abbreviations
+set shortmess=filnrxtTsI
+
 "use utf-8
 set encoding=utf-8 fileencodings=utf-8,latin1
 
