@@ -9,6 +9,10 @@ set show-all-if-ambiguous on
 shopt -s checkwinsize
 shopt -s cdspell
 shopt -s hostcomplete
+shopt -s extglob
+shopt -s hostcomplete
+# report completed jobs immediately
+# set -b
 
 # hostname autocompletion
 # taken from Mark Liyange <www.entropy.ch>
@@ -22,9 +26,4 @@ fi
 alias list_all_hostnames='cat ~/.known_ssh_hostnames'
 #might be tcsh format?
 complete scp 'p/*/`scp_completions`/'
-
-
-#export PS1='\[\e]0;\u@\h \w\a\]\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
-export PS1='\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\$ '
-
 
