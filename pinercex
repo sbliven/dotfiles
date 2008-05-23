@@ -1,0 +1,55 @@
+# Mutt-like color configuration for Pine(tm) 4.20, copyright 1989-1999 University of Washington.
+#
+# append this file to the end of your ~/.pinerc to get colors in Pine based
+# on the most commonly used color scheme of Mutt. 
+#
+# Colordefs made by Starv
+
+# Controls display of color
+color-style=use-termdef
+
+# Choose: black,blue,green,cyan,red,magenta,yellow,or white.
+normal-foreground-color=black
+normal-background-color=white
+reverse-foreground-color=red
+reverse-background-color=yellow
+title-foreground-color=black
+title-background-color=blue
+status-foreground-color=white
+status-background-color=red
+keylabel-foreground-color=white
+keylabel-background-color=blue
+keyname-foreground-color=black
+keyname-background-color=white
+selectable-item-foreground-color=
+selectable-item-background-color=
+quote1-foreground-color=cyan
+quote1-background-color=white
+quote2-foreground-color=magenta
+quote2-background-color=white
+quote3-foreground-color=blue
+quote3-background-color=white
+prompt-foreground-color=
+prompt-background-color=
+index-to-me-foreground-color=blue
+index-to-me-background-color=white
+index-important-foreground-color=
+index-important-background-color=
+index-deleted-foreground-color=red
+index-deleted-background-color=white
+index-answered-foreground-color=green
+index-answered-background-color=white
+index-new-foreground-color=black
+index-new-background-color=red
+index-recent-foreground-color=
+index-recent-background-color=
+index-unseen-foreground-color=
+index-unseen-background-color=
+
+# When viewing messages, these are the header colors
+viewer-hdr-colors=/HDR=From/FG=blue/BG=white,
+	/HDR=Date/FG=blue/BG=white,
+	/HDR=Reply-To/FG=blue/BG=white,
+	/HDR=Subject/FG=yellow/BG=black,
+	/HDR=To/FG=blue/BG=white
+
