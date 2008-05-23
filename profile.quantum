@@ -1,0 +1,85 @@
+# ~/.profile.local
+# Created by Spencer Bliven
+# 
+# This file contains settings specific to the configuration of my PowerBook (Quantum.local).
+
+#echo "`date`  Running .profile" #>> /Users/blivens/startup_scripts.log
+/sw/bin/fortune
+
+
+# Include fink paths
+test -r /sw/bin/init.sh && . /sw/bin/init.sh
+export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
+export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:$MANPATH"
+# Setting PATH for MacPython 2.5
+# The orginal version is saved in .profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
+export PATH
+#export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
+PYTHONPATH="/Library/Frameworks/Python.framework/Versions/Current/"
+
+
+#tomcat settings
+CATALINA_HOME=/usr/local/tomcat
+export JAVA_HOME=/usr
+export JRE_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/
+alias tomcat_startup="$CATALINA_HOME/bin/startup.sh"
+alias tomcat_shutdown="$CATALINA_HOME/bin/shutdown.sh"
+
+
+alias dosbox='dosbox "/Applications (DOS)/" &'
+alias chips='cat "/Applications (DOS)/chips/levels.txt"; dosbox'
+alias basilisk='BasiliskII &'
+alias valknut='valknut --disable-tray'
+
+# media
+alias qtpresent="osascript -e 'tell application \"QuickTime Player\" to present movie 1.0'"
+function mp_nice {
+    for p in `psa|grep -i mplayer|awk '{print $2}'`
+    do
+        sudo renice -10 "$p"
+    done
+}
+#alias mplayer='"/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer"'
+
+
+# Locates music files outside your music library
+function consolidateITunesLibrary {
+	local XML="$HOME/Music/iTunes/iTunes Music Library.xml";
+	local FILES='file://localhost/Users/blivens/Music/iTunes/iTunes%20Music/';
+	sed 's/<[^>]*>/\
+/g' "$XML" |
+		grep 'file:' |
+		grep -v "$FILES";
+}
+
+
+#ssh-agent start
+SSH_ENV=$HOME/.ssh/environment
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > ${SSH_ENV}
+    echo succeeded
+    chmod 600 ${SSH_ENV}
+    . ${SSH_ENV} > /dev/null
+    /usr/bin/ssh-add;
+}
+
+# Source SSH settings, if applicable
+
+if [ -f "${SSH_ENV}" ]; then
+    . ${SSH_ENV} > /dev/null
+    ps -ecA | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
+
+#Finder control
+alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
+alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
+
+#Prompt color is green
+export PS1_COLOR="32"
