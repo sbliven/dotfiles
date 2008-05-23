@@ -11,7 +11,13 @@ echo "`date`  Running .profile" #>> /Users/blivens/startup_scripts.log
 test -r /sw/bin/init.sh && . /sw/bin/init.sh
 export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
 export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:$MANPATH"
-export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
+# Setting PATH for MacPython 2.5
+# The orginal version is saved in .profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
+export PATH
+#export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
+PYTHONPATH="/Library/Frameworks/Python.framework/Versions/Current/"
+
 
 if [ -e `which vim` ]; then
 	export EDITOR=`which vim`
@@ -31,6 +37,7 @@ export LANG=en_US.UTF-8
 #Useful IPs
 # 72.14.207.99	google.com
 # 164.109.28.3	comcast.com
+alias netprobe='ping -aoi 300 72.14.207.99 && date'
 
 # SSH connections
 alias dante='ssh -X blivens@dante.u.washington.edu'
@@ -113,4 +120,32 @@ fi
 #alias mplayer='"/Applications/MPlayer OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/mplayer"'
 alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
 alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
+
+# PROMPT
+# \[ ... \] is nonprinting 
+# colors: \e[<fg;bg;...>m
+# color black   red     green   yellow  blue    magenta cyan    white
+# fg    30      31      32      33      34      35      36      37
+# bg    40      41      42      43      44      45      46      47
+# attributes: (not supported in prompt)
+# 0 normal
+# 1 bold/bright
+# 2 underline (not supported)
+
+echo "TERM=$TERM"
+case $TERM in
+    xterm*)
+        # titlebar:
+        # \e]0;$str\a sets the title to $str
+        PS1='\[\e]0;\u@\h[\l] \W\a\]'
+        # prompt:
+        PS1="$PS1\[\e[32m\]\w\[\e[34m\]\$\[\e[0m\] "
+        echo "PS1=$PS1"
+        ;;
+    *)
+        PS1='\u@\h \wzz\$ '
+        echo "default PS1=$PS1"
+        ;;
+esac
+export PS1
 
