@@ -72,6 +72,10 @@ case $TERM in
 esac
 export PS1
 
+#MySQL prompt
+export MYSQL_PS1='\U \d> '
+
+
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered
 source .profile.local
