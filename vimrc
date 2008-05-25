@@ -5,7 +5,7 @@ syntax enable
 set autoindent
 set smartindent "indent intelligently around { and such
 "do not place comments all the way left:
-inoremap # X# 
+inoremap # X#
 "set cindent "c-style smart indent
 "set indentexpr= "custom indent expression
 set tabstop=4
