@@ -27,7 +27,9 @@ fi
 
 # start some nice programs
 
-xterm -ls -u8 &
+xterm -ls -u8 -geometry 100x55+0+0 &
+xterm -ls -u8 -geometry 80x28-1+0 &
+xterm -ls -u8 -geometry 80x28-1+400 &
 
 # start the window manager
 
