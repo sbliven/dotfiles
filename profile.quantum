@@ -10,7 +10,7 @@
 # Include fink paths
 test -r /sw/bin/init.sh && . /sw/bin/init.sh
 export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
-export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:$MANPATH"
+export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:/usr/local/mysql/man:$MANPATH"
 # Setting PATH for MacPython 2.5
 # The orginal version is saved in .profile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
@@ -31,6 +31,12 @@ alias dosbox='dosbox "/Applications (DOS)/" &'
 alias chips='cat "/Applications (DOS)/chips/levels.txt"; dosbox'
 alias basilisk='BasiliskII &'
 alias valknut='valknut --disable-tray'
+
+#Override checknet function
+function checknet {
+    ping -oi 300 $googleIP && date && \
+        growlnotify -s -n "checknet" -t "checknet" -m 'Internet Service has resumed'
+}
 
 # media
 alias qtpresent="osascript -e 'tell application \"QuickTime Player\" to present movie 1.0'"

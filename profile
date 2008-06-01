@@ -16,7 +16,11 @@ export LANG=en_US.UTF-8
 #Useful IPs
 googleIP='72.14.207.99'
 comcastIP='164.109.28.3'
-alias netprobe="ping -aoi 300 $google && date"
+function checknet {
+    ping -aoi 300 $googleIP && date
+}
+
+
 
 # SSH connections
 alias dante='ssh -X blivens@dante.u.washington.edu'
@@ -80,3 +84,7 @@ export MYSQL_PS1='\U \d> '
 # Running after the generic profile allows variables to be clobbered
 source .profile.local
 
+#last, start up screen
+if [[ ! $STY ]]; then
+    screen -xRR
+fi
