@@ -36,7 +36,7 @@ alias klicklic='ssh blivens@redaxed.homelinux.com'
 
 #ls options
 export CLICOLOR=TRUE
-alias ll='ls -l'
+alias ll='ls -lh'
 alias l.='ls -A'
 alias la='ls -a'
 
@@ -78,6 +78,18 @@ export PS1
 
 #MySQL prompt
 export MYSQL_PS1='\U \d> '
+
+#Wait for the any key to be pressed
+pause () {
+    tput smso
+    echo "Press any key to continue"
+    tput rmso
+    oldstty=`stty -g`
+    stty -icanon -echo min 1 time 0
+    dd bs=1 count=1 >/dev/null 2>&1
+    stty "$oldstty"
+    echo
+}
 
 
 # Run host-specific profile
