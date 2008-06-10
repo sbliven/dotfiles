@@ -34,8 +34,10 @@ alias valknut='valknut --disable-tray'
 
 #Override checknet function
 function checknet {
-    ping -oi 300 $googleIP && date && \
+    ping -c 1 -t 1 $googleIP || {
+        ping -oi 300 $googleIP && date && \
         growlnotify -s -n "checknet" -t "checknet" -m 'Internet Service has resumed'
+    }
 }
 
 # media
@@ -89,3 +91,6 @@ alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; 
 
 #Prompt color is green
 export PS1_COLOR="32"
+
+#cdargs
+. cdargs-bash.sh
