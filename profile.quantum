@@ -6,17 +6,41 @@
 #echo "`date`  Running .profile" #>> /Users/blivens/startup_scripts.log
 /sw/bin/fortune
 
-
+# SET UP PATHS
+# Lower entries are searched first
 # Include fink paths
 test -r /sw/bin/init.sh && . /sw/bin/init.sh
-export PATH=".:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin/:/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/usr/local/arm-uclinux-tools/bin/:/usr/local/glassfish/bin:$PATH"
-export MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:/sw/local/sage-1.2.4/local/share/man:/usr/local/ch5.5.0/docs/man:/usr/local/mysql/man:$MANPATH"
+#Custom installs
+PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+MANPATH="/usr/share/man:/usr/local/man/:/usr/local/share/man:$MANPATH"
+#sage
+MANPATH="/sw/local/sage-1.2.4/local/share/man:$MANPATH"
+#ch - C interpreter
+MANPATH="/usr/local/ch5.5.0/docs/man:$MANPATH"
+#mysql
+PATH="/usr/local/mysql/bin/:$PATH"
+MANPATH="/usr/local/mysql/man:$MANPATH"
+#uclinux tools, compiled for arm.
+#why?
+PATH="/usr/local/arm-uclinux-tools/bin/:$PATH"
+#Glassfish (C# for Unix)
+PATH="/usr/local/glassfish/bin:$PATH"
+#MPlayer
+PATH="/Applications/MPlayer\ OSX.app/Contents/Resources/External_Binaries/mplayer.app/Contents/MacOS/:/$PATH"
+#FFmpegr
+PATH="/Applications/_audio\:video/ffmpegX.app/Contents/Resources/ffmpeg:$PATH"
 # Setting PATH for MacPython 2.5
 # The orginal version is saved in .profile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/Current/bin:${PATH}"
-export PATH
 #export PYTHONPATH=/sw/lib/python2.4/site-packages:$PYTHONPATH
-PYTHONPATH="/Library/Frameworks/Python.framework/Versions/Current/"
+export PYTHONPATH="/Library/Frameworks/Python.framework/Versions/Current/"
+# Add fop (apache utility for making pdfs from xslt file) to PATH
+PATH="/usr/local/fop:$PATH"
+#export FOP_HOME=/usr/local/fop
+#Always use the version from the current directory first
+PATH=".:$PATH"
+export PATH
+export MANPATH
 
 
 #tomcat settings
@@ -43,7 +67,7 @@ function checknet {
 # media
 alias qtpresent="osascript -e 'tell application \"QuickTime Player\" to present movie 1.0'"
 function mp_nice {
-    for p in `psa|grep -i mplayer|awk '{print $2}'`
+    for p in `ps -Awwo pid,command |egrep -i 'mplayer|vlc' |grep -v 'grep'|awk '{print $1}'`
     do
         sudo renice -10 "$p"
     done
