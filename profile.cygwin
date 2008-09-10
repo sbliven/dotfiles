@@ -1,0 +1,13 @@
+PATH="/usr/X11R6/bin:$PATH"
+export PATH
+
+#Make sure we start in the firght directory for login scripts
+if [ -d "$HOME" ]; then
+    cd "$HOME"
+fi
+
+# Use green prompt
+export PS1_COLOR="32"
+
+#run X11
+startx
