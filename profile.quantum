@@ -118,3 +118,9 @@ export PS1_COLOR="32"
 
 #cdargs
 . cdargs-bash.sh
+
+#last, start up screen
+if [[ ! $STY && -x `which screen` ]]; then
+    screen -xRR
+fi
+

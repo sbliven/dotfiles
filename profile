@@ -94,9 +94,5 @@ pause () {
 
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered
-source .profile.local
+exec ~/.profile.local
 
-#last, start up screen
-if [[ ! $STY ]]; then
-    screen -xRR
-fi

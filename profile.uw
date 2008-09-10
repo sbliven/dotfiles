@@ -5,3 +5,9 @@
 
 export PATH="$HOME/mysql/bin:$PATH"
 export MANPATH="$HOME/mysql/man:$MANPATH"
+
+#last, start up screen
+if [[ ! $STY && -x `which screen` ]]; then
+    screen -xRR
+fi
+
