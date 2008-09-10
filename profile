@@ -94,5 +94,5 @@ pause () {
 
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered
-exec ~/.profile.local
+source ~/.profile.local
 
