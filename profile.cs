@@ -1,9 +1,14 @@
 echo "`date`  Running .profile"
 
 #configure paths
-PATH=".:/projects/cse/courses/cse481f/bin/:/uns/bin:$PATH"
+PATH="~/bin/:$PATH"
+MANPATH="~/man/:$MANPATH"
+PATH=".:/projects/cse/courses/cse481f/bin/:$PATH:/uns/bin"
+CDPATH="/projects/instr/07sp/cse451/o/:/projects/instr/07sp/cse481f:$CDPATH"
+CDPATH="~/Rosetta/blivens:$CDPATH"
+CDPATH=".:$CDPATH:~"
 export PATH
-CDPATH=".:~:/projects/instr/07sp/cse451/o/:/projects/instr/07sp/cse481f"
+export MANPATH
 export CDPATH
 
 #CSE481f shortcuts
