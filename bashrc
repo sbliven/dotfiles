@@ -27,3 +27,8 @@ alias list_all_hostnames='cat ~/.known_ssh_hostnames'
 #might be tcsh format?
 complete scp 'p/*/`scp_completions`/'
 
+#Set process limit to keep recursion from going out of control
+ulimit -Su 64
+
+#allow chats
+mesg y

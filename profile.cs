@@ -21,12 +21,6 @@ alias csepclab='/cse/lab/bin/csepclab-smbclient'
 #Always enable x11 forwarding in ssh
 alias ssh='ssh -X'
 
-#Set process limit to keep recursion from going out of control
-ulimit -Su 64
-
-#allow chats
-mesg y
-
 #Use a blue prompt color
 export PS1_COLOR='34'
 
