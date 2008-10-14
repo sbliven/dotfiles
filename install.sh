@@ -4,6 +4,9 @@
 #dir to put dotfiles in
 ROOT="$HOME";
 
+#Print a list of linked files
+#export DEBUG_PRINT=${DEBUG_PRINT='T'}
+
 # Try to guess the absolute path for the config scripts. This should work in
 # most cases, but it's not foolproof.
 if [ "$CONFIG" = "" ]
@@ -23,7 +26,7 @@ fi
 safeLink() {
     local src="$1" dst="$2";
 
-    if [ -e "$dst" -a ! -h "$dst" ] ; #exists and not a link
+    if [[ -e "$dst" && ! -h "$dst" ]] ; #exists and not a link
     then
         #move old $dst out of the way
         if [ -e "${dst}.old" ]
@@ -35,13 +38,12 @@ safeLink() {
             mv "$dst" "${dst}.old"
         fi
     fi
-    #assert [ ! -e "$dst" ]
-    if [ -e "$dst" ]; then
-        echo "$dst exists!"
-        exit
-    fi
+    #assert [[ ! -e "$dst" || -h "$dst" ]]
+
     #link new dst
-    echo "$src->$dst"
+    if [[ -n ${DEBUG_PRINT} && ${DEBUG_PRINT} != 'F' ]]; then
+        echo "$src->$dst"
+    fi
     ln -sf "$src" "$dst"
 }
 export -f safeLink
@@ -54,8 +56,9 @@ vimrc	.vimrc
 vim	.vim
 xinitrc	.xinitrc
 screenrc	.screenrc
+profile.default	.profile.local
 END
 
 #select the proper local profile
-echo 'Remember to link a .profile.local up too!'
+echo 'Remember to customize or re-link .profile.local for this machine.'
 
