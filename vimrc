@@ -35,9 +35,12 @@ set nohlsearch
 
 set backspace=indent,eol,start
 set ruler
+set number
 
-" Don't use Ex mode, use Q for formatting
+set list listchars=trail:`,tab:__
+" Don't use Ex or record mode, use Q for formatting
 map Q gq
+map q gq
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd") && 0
@@ -48,12 +51,14 @@ if has("autocmd") && 0
   filetype plugin indent on
 
   "autocmd FileType code set number
+  autocmd FileType python set list listchars=trail:`
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
   au!
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
+
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
