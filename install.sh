@@ -55,6 +55,7 @@ Xdefaults.white	.Xdefaults
 vimrc	.vimrc
 vim	.vim
 xinitrc	.xinitrc
+Xmodmap	.Xmodmap
 screenrc	.screenrc
 profile.default	.profile.local
 END
