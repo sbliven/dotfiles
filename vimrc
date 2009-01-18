@@ -35,10 +35,14 @@ set nohlsearch
 
 set backspace=indent,eol,start
 set ruler
+"wrap between words
+set linebreak
+"hardwrap
+"set textwidth=80 
 set number
 
 set list listchars=trail:`,tab:__
-" Don't use Ex or record mode, use Q for formatting
+" Don't use Ex mode or recording mode, use Q for formatting
 map Q gq
 map q gq
 
