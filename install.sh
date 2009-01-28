@@ -58,6 +58,7 @@ xinitrc	.xinitrc
 Xmodmap	.Xmodmap
 screenrc	.screenrc
 profile.default	.profile.local
+hgrc	.hgrc
 END
 
 #select the proper local profile
