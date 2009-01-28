@@ -1,4 +1,4 @@
-echo "`date`  Running .bashrc" #|tee -a /Users/blivens/startup_scripts.log
+#echo "`date`  Running .bashrc" #|tee -a /Users/blivens/startup_scripts.log
 
 # history
 export HISTIGNORE="fg:bg:exit"
