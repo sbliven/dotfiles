@@ -37,8 +37,8 @@ alias klicklic='ssh blivens@redaxed.homelinux.com'
 #ls options
 export CLICOLOR=TRUE
 alias ll='ls -lh'
-alias l.='ls -A'
-alias la='ls -a'
+alias l.='ls -lA'
+alias la='ls -A'
 
 #process control
 alias psa='ps -rcAo user,pid,ppid,%cpu,%mem,rss=MEM,vsz=VMEM,nice,state=STATE,time,command'
@@ -66,7 +66,7 @@ case $TERM in
     xterm*)
         # titlebar:
         # \e]0;$str\a sets the title to $str
-        PS1='\[\e]0;\u@\h[\l] \W\a\]'
+        PS1='\[\e]0;\h[\l] \W\a\]'
         # prompt:
         PS1="${PS1}\[\e[\${PS1_COLOR}m\]\w\[\e[34m\] \\$\[\e[0m\] "
         ;;

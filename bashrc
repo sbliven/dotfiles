@@ -2,17 +2,21 @@
 
 # history
 export HISTIGNORE="fg:bg:exit"
-set cmdhist
+export HISTCONTROL="ignoredups:ignorespace:erasedups"
 set show-all-if-ambiguous on
 
 #set some bash settings
-shopt -s checkwinsize
 shopt -s cdspell
-shopt -s hostcomplete
+shopt -s checkwinsize
+shopt -s cmdhist
 shopt -s extglob
+shopt -s histappend
 shopt -s hostcomplete
+shopt -s interactive_comments
+shopt -s no_empty_cmd_completion
+shopt -s nullglob
 # report completed jobs immediately
-# set -b
+set -b
 
 # hostname autocompletion
 # taken from Mark Liyange <www.entropy.ch>
