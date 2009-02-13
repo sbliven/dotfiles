@@ -30,8 +30,8 @@ export CDPATH
 # 32    Green   Local Machines
 # 33    Yellow
 # 34    Blue    CSE Machines
-# 35    Magenta
-# 36    Cyan
+# 35    Magenta Work Machines
+# 36    Cyan    Work Servers
 #
 #export PS1_COLOR="31"
 
