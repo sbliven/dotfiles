@@ -58,6 +58,7 @@ xinitrc	.xinitrc
 Xmodmap	.Xmodmap
 screenrc	.screenrc
 profile.default	.profile.local
+gnuplot	.gnuplot
 hgrc	.hgrc
 END
 
