@@ -1,0 +1,116 @@
+# ~/.profile.local
+# Created by Spencer Bliven
+#
+# This contains settings specifice to the configuration of my MacBook Pro (Isabelle.local).
+
+/opt/local/bin/fortune
+
+# SET UP PATHS
+# Lower entries are searched first
+# Fink
+test -r /sw/bin/init.sh && /sw/bin/init.sh
+# MacPorts
+if [ -d /opt ]; then
+    PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+    MANPATH="/opt/local/share/man:$MANPATH"
+fi
+#Custom installs
+PATH="/usr/local/sbin:$PATH"
+MANPATH="/usr/local/man/:$MANPATH"
+# sage
+PATH="/usr/local/sage:$PATH"
+MANPATH="/usr/local/sage/local/share/man:$MANPATH"
+PYTHONPATH="/usr/local/sage/devel/sage/:/usr/local/sage/devel/sage/sage/:$PYTHONPATH"
+# home directory
+PATH="~/bin:$PATH"
+MANPATH="~/home:$MANPATH"
+# current directory
+PATH=".:bin:$PATH"
+MANPATH="man:$MANPATH"
+export PATH MANPATH
+export PYTHONPATH
+
+alias deepsleep='"/Users/blivens/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
+
+#CDPATH
+CDPATH="~:$CDPATH"
+export CDPATH
+
+#Override checknet function
+function checknet {
+    ping -c 1 -t 1 $googleIP || {
+        ping -oi 300 $googleIP && date && \
+        growlnotify -s -n "checknet" -t "checknet" -m 'Internet Service has resumed'
+    }
+}
+
+
+# media
+alias qtpresent="osascript -e 'tell application \"QuickTime Player\" to present movie 1.0'"
+function mp_nice {
+    for p in `ps -Awwo pid,command |egrep -i 'mplayer|vlc' |grep -v 'grep'|awk '{print $1}'`
+    do
+        sudo renice -10 "$p"
+    done
+}
+
+# Prompt Color
+# 31    Red     Default
+# 32    Green   Local Machines
+# 33    Yellow
+# 34    Blue    CSE Machines
+# 35    Magenta
+# 36    Cyan
+#
+export PS1_COLOR="32"
+
+
+#ssh-agent start
+#SSH_ENV=$HOME/.ssh/environment
+
+#function start_agent {
+#    echo "Initialising new SSH agent..."
+#    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > ${SSH_ENV}
+#    echo succeeded
+#    chmod 600 ${SSH_ENV}
+#    . ${SSH_ENV} > /dev/null
+#    /usr/bin/ssh-add;
+#}
+
+# Source SSH settings, if applicable
+
+#if [ -f "${SSH_ENV}" ]; then
+#    . ${SSH_ENV} > /dev/null
+#    ps -ecA | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+#        start_agent;
+#    }
+#else
+#    start_agent;
+#fi
+
+
+#Finder control
+alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
+alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
+
+
+#cdargs
+. /opt/local/etc/profile.d/cdargs-bash.sh
+
+
+# Maybe start screen?
+if [[ ! $STY && -x `which screen` && ! "ENABLE" ]] ; then
+    screen -xRR
+fi
+
+#Count lines of c++ files
+function code_count {
+    for f in "$1"/*; do
+        if [[ -d "$f" ]]; then
+            #echo "Recursing $f" 1>&2
+            code_count "$f"
+        fi
+    done
+    cat "$1"/*.cc "$1"/*.hh 2>/dev/null
+}
+
