@@ -1,3 +1,16 @@
 [ui]
-username = Spencer Bliven <blivens@u.washington.edu>
+username = Spencer Bliven <quantum7@gmail.com>
+remotecmd.attu* = source ~/.ssh/environment; hg
+#remotecmd.attu* = '/projects/instr/09wi/cse401/g/hg/hg'
+
+[extensions]
+hgext.extdiff =
+
+[extdiff]
+cmd.fmdiff = 
+cmd.vimdiff = gvim
+opts.vimdiff = -f '+next' '+execute "DirDiff" argv(0) argv(1)'
+
+[paths]
+concurr = ssh://nexus.silverfir.net//projects/concurr/main
 
