@@ -74,3 +74,8 @@ if has("autocmd") && 0
 else
   set autoindent		" always set autoindenting on
 endif " has("autocmd")
+
+if has("gui_running")
+    "set editor window size
+    set lines=65 columns=120
+endif
