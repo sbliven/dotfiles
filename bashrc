@@ -34,5 +34,8 @@ complete scp 'p/*/`scp_completions`/'
 #Set process limit to keep recursion from going out of control
 ulimit -Su 64
 
-#allow chats
-mesg y
+if [[ "$-" =~ i ]]; then
+    #allow chats
+    mesg y
+    echo interactive
+fi
