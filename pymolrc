@@ -1,0 +1,23 @@
+run ~/dev/rosettaWS/bin/sequential_residues.py
+run ~/dev/rosettaWS/bin/load_sep.py
+
+cd ~/pdb
+
+alias centroid_spheres,\
+	hide everything, name CEN; \
+	create centroids, name CEN; \
+	set sphere_transparency, 0.8, centroids; \
+	show spheres, centroids
+
+alias show_cys,\
+	hide everything; \
+	show cartoon; \
+	show lines, not (name c+n+o+h); \
+	hide lines, hydrogens; \
+	show sticks, resn cys
+
+one_letter ={'VAL':'V', 'ILE':'I', 'LEU':'L', 'GLU':'E', 'GLN':'Q', \
+'ASP':'D', 'ASN':'N', 'HIS':'H', 'TRP':'W', 'PHE':'F', 'TYR':'Y',    \
+'ARG':'R', 'LYS':'K', 'SER':'S', 'THR':'T', 'MET':'M', 'ALA':'A',    \
+'GLY':'G', 'PRO':'P', 'CYS':'C'}
+
