@@ -1,0 +1,1 @@
+set listchars=tab:›\ ,trail:˙

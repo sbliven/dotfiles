@@ -12,6 +12,10 @@ set tabstop=4
 set shiftwidth=4
 set smarttab "use shiftwidth for tab distance, not tabstop
 set expandtab "insert spaces instead of real tabs.
+set nomodeline "ignore the settings for vi: at the beginning of files
+
+set foldmethod=syntax "Automatically detect code folds
+set foldmethod=manual "Now allow other folds to be defined
 
 "abbreviations
 set shortmess=filnrxtTsI
@@ -25,7 +29,7 @@ set laststatus=2 "always show status line
 "searching
 set incsearch
 set ignorecase smartcase
-set nohlsearch
+set hlsearch
 
 "Don't require brackets to be to the far left
 :map [[ ?{<CR>w99[{
@@ -42,6 +46,7 @@ set linebreak
 set number
 
 set list listchars=trail:`,tab:__
+set listchars=tab:›\ ,trail:˙
 " Don't use Ex mode or recording mode, use Q for formatting
 map Q gq
 map q gq
