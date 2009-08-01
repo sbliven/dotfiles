@@ -1,1 +1,3 @@
-set terminal x11
+set term x11
+set ticslevel 0
+
