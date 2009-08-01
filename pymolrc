@@ -1,7 +1,7 @@
 run ~/dev/rosettaWS/bin/sequential_residues.py
 run ~/dev/rosettaWS/bin/load_sep.py
 
-cd ~/pdb
+#cd ~/pdb
 
 alias centroid_spheres,\
 	hide everything, name CEN; \
@@ -20,4 +20,3 @@ one_letter ={'VAL':'V', 'ILE':'I', 'LEU':'L', 'GLU':'E', 'GLN':'Q', \
 'ASP':'D', 'ASN':'N', 'HIS':'H', 'TRP':'W', 'PHE':'F', 'TYR':'Y',    \
 'ARG':'R', 'LYS':'K', 'SER':'S', 'THR':'T', 'MET':'M', 'ALA':'A',    \
 'GLY':'G', 'PRO':'P', 'CYS':'C'}
-
