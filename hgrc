@@ -1,6 +1,6 @@
 [ui]
 username = Spencer Bliven <quantum7@gmail.com>
-remotecmd.attu* = source ~/.ssh/environment; hg
+remotecmd = source ~/.ssh/environment; hg
 #remotecmd.attu* = '/projects/instr/09wi/cse401/g/hg/hg'
 
 [extensions]
