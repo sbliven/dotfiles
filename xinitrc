@@ -1,6 +1,6 @@
 #!/bin/sh
 # $Id: xinitrc,v 1.3 2004/06/11 04:37:23 jharper Exp $
-echo "`date`  Running .xinitrc" >> /Users/blivens/startup_scripts.log
+#echo "`date`  Running .xinitrc" >> /Users/blivens/startup_scripts.log
 
 userresources=$HOME/.Xresources
 usermodmap=$HOME/.Xmodmap
