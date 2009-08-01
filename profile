@@ -66,7 +66,7 @@ case $TERM in
     xterm*)
         # titlebar:
         # \e]0;$str\a sets the title to $str
-        PS1='\[\e]0;\h[\l] \W\a\]'
+        PS1='\[\e]0;\W	\h[\l]\a\]'
         # prompt:
         PS1="${PS1}\[\e[\${PS1_COLOR}m\]\w\[\e[34m\] \\$\[\e[0m\] "
         ;;
