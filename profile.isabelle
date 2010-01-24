@@ -20,7 +20,10 @@ MANPATH="/usr/local/man/:$MANPATH"
 # sage
 PATH="/usr/local/sage:$PATH"
 MANPATH="/usr/local/sage/local/share/man:$MANPATH"
-PYTHONPATH="/usr/local/sage/devel/sage/:/usr/local/sage/devel/sage/sage/:$PYTHONPATH"
+#PYTHONPATH="/usr/local/sage/devel/sage/:/usr/local/sage/devel/sage/sage/:$PYTHONPATH"
+# MySQL
+PATH="/usr/local/mysql/bin:$PATH"
+MANPATH="/usr/local/mysql/man:$MANPATH"
 # home directory
 PATH="~/bin:$PATH"
 MANPATH="~/home:$MANPATH"
@@ -32,16 +35,27 @@ export PYTHONPATH
 
 alias deepsleep='"/Users/blivens/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
 
-#CDPATH
-CDPATH="~:$CDPATH"
-export CDPATH
+alias sethostname='sudo scutil --set HostName isabelle.local'
 
 #Override checknet function
 function checknet {
-    ping -c 1 -t 1 $googleIP || {
-        ping -oi 300 $googleIP && date && \
-        growlnotify -s -n "checknet" -t "checknet" -m 'Internet Service has resumed'
-    }
+    if ! ping -c 1 -t 1 $googleIP; then
+        timeout=1 #double each check
+        sleep $timeout
+        echo -n "${timeout}: ";date
+        {
+            while ! ping -c 1 -t 1 $googleIP; do
+                ((timeout*=2))
+                sleep $timeout
+                echo -n "${timeout}: ";date
+            done 2>&1 |egrep '^PING|bytes from'
+        } &&
+        date &&
+        if [[ -e $(which growlnotify) ]]; then
+            growlnotify -s -n "checknet" -t "checknet" \
+                -m 'Internet Service has resumed'
+        fi
+    fi
 }
 
 
@@ -53,6 +67,15 @@ function mp_nice {
         sudo renice -10 "$p"
     done
 }
+
+#alias svn1.4-diff='svn1.4 diff --diff-cmd fmdiff'
+#alias svn1.6-diff='svn1.6 diff --diff-cmd fmdiff'
+alias svn-diff='svn diff --diff-cmd fmdiff'
+
+#function svn {
+#    read -p "SVN version 1.[4]:" version
+#    "svn1.${version:-4}" "$@"
+#}
 
 # Prompt Color
 # 31    Red     Default
@@ -93,6 +116,11 @@ export PS1_COLOR="32"
 alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
 alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
 
+# Workaround for gvim warnings
+function gvim {
+    { $(which gvim) "$@"; } 3>&2 2>&1 1>&3 |
+        grep -v 'Xlib:  extension "RANDR" missing on display' 3>&2 2>&1 1>&3 &
+}
 
 #cdargs
 . /opt/local/etc/profile.d/cdargs-bash.sh
@@ -114,3 +142,7 @@ function code_count {
     cat "$1"/*.cc "$1"/*.hh 2>/dev/null
 }
 
+#Forward ssh connections through the baker firewall
+function baker_fw {
+    ssh -L 2200:dig30:22 -l blivens fw.bakerlab.org -N
+}
