@@ -1,0 +1,136 @@
+from xml.dom.minidom import *
+from pymol import cmd, stored
+
+#Pymol functions
+def selectAlignment(alignFile, name1=None, name2=None):
+    """Defines two new selections based on the alignment given in alignFile.
+    AlignFile is in the XML format used by CE and BioJava.
+
+    return the names of the two selections (sele_name1, sele_name2)
+    """
+    align = Alignment(alignFile)
+
+    if name1 is None:
+        name1 = align.name1[:4]
+    if name2 is None:
+        name2 = align.name2[:4]
+
+    select1 = "%s and ( %s )" % (name1, align.getSelect1())
+    select2 = "%s and ( %s )" % (name2, align.getSelect2())
+    cmd.select("sele_"+name1, select1)
+    cmd.select("sele_"+name2, select2)
+
+    cmd.deselect()
+
+    return ("sele_"+name1,"sele_"+name2,)
+
+cmd.extend( "selectAlignment", selectAlignment )
+
+
+def displayAlignment(alignFile, name1, name2):
+    """Reads an alignment from the specified XML file, then formats the objects
+    name1 and name2 to show off the alignment
+    """
+    # Calculate selections
+    (sele1,sele2) = selectAlignment(alignFile, name1, name2)
+
+    align1=name1+"_aligned"
+    align2=name2+"_aligned"
+
+    cmd.create(align1, name1+" and "+sele1)
+    cmd.create(align2, name2+" and "+sele2)
+
+    cmd.show("cartoon", " or ".join([name1,name2,align1,align2]))
+    cmd.set("cartoon_transparency", .5, " or ".join([name1,name2]))
+
+    cmd.color("orange",align1)
+    cmd.color("lightorange",name1)
+    cmd.color("cyan",align2)
+    cmd.color("palecyan",name2)
+
+#    cmd.hide("everything", name1+" or "+name2)
+#    cmd.show("ribbon", name1+" or "+name2)
+#    cmd.set("ribbon_smooth",1)
+#    cmd.set("ribbon_sampling",20)
+#
+#    cmd.color("grey",name1)
+#    cmd.color("black",name2)
+#
+#    cmd.show("ribbon", name1)
+#    cmd.show("ribbon", name2)
+#    cmd.show("ribbon", align1)
+#    cmd.show("ribbon", align2)
+#
+#    cmd.set("ribbon_width",4)
+#    cmd.set("ribbon_width",8,align1+" or "+align2)
+#
+#    cmd.color("cyan",align1)
+#    cmd.color("orange",align2)
+
+cmd.extend( "displayAlignment", displayAlignment)
+
+#Class to parse alignment xml
+class Alignment:
+
+    def __init__(self, file=None):
+        self._blocks = []
+        if file is not None:
+            doc = parse(file)
+            self.handleAlignmentXML(doc)
+
+    def handleAlignmentXML(self, doc):
+        afpchain = doc.getElementsByTagName("AFPChain")[0]
+        self.handleAFPChain(afpchain)
+
+    def handleAFPChain(self, chain):
+        self.name1 = chain.attributes["name1"].value
+        self.name2 = chain.attributes["name2"].value
+        blocks = chain.getElementsByTagName("block")
+
+        for block in blocks:
+            self.handleBlock(block)
+
+    def handleBlock(self, block):
+        eqrs = block.getElementsByTagName("eqr")
+        matrix = block.getElementsByTagName("matrix")
+        shift = block.getElementsByTagName("shift")
+
+        self._blocks.append( [self.handleEQR(eqr) for eqr in eqrs] )
+
+    def handleEQR(self, eqr):
+        pdb1 = eqr.attributes["pdbres1"].value
+        pdb2 = eqr.attributes["pdbres2"].value
+        chain1 = eqr.attributes["chain1"].value
+        chain2 = eqr.attributes["chain2"].value
+        #print("%s%s-%s%s"%(pdb1,chain1,pdb2,chain2))
+        return (pdb1,chain1,pdb2,chain2)
+
+    def __str__(self):
+        s = "%s\t%s\n" % (self.name1, self.name2)
+        for block in self._blocks:
+            for eqr in block:
+                s += "%s%s\t%s%s\n" % eqr
+            s += "\n"
+        return s
+
+    def getSelect1(self):
+        """Returns a pymol selector string selecting the residues of name1."""
+        res = []
+        for block in self._blocks:
+            for (pdb1,chain1,pdb2,chain2) in block:
+                res.append("( resi %s and chain %s )"%(pdb1,chain1))
+        return " or ".join(res)
+
+    def getSelect2(self):
+        """Returns a pymol selector string selecting the residues of name2."""
+        res = []
+        for block in self._blocks:
+            for (pdb1,chain1,pdb2,chain2) in block:
+                res.append("( resi %s and chain %s )"%(pdb2,chain2))
+        return " or ".join(res)
+
+if __name__ == "__main__":
+    file = "/Users/blivens/dev/bourne/1iu9 1h0r.xml"
+    alignment = Alignment(file)
+    print(str(alignment))
+    print(__package__)

@@ -60,6 +60,8 @@ screenrc	.screenrc
 profile.default	.profile.local
 gnuplot	.gnuplot
 hgrc	.hgrc
+pymolrc	.pymolrc
+pymol	.pymol
 END
 
 #select the proper local profile
