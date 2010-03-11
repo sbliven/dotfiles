@@ -69,6 +69,51 @@ def displayAlignment(alignFile, name1, name2):
 
 cmd.extend( "displayAlignment", displayAlignment)
 
+
+def displayAlignmentBlocks(alignFile, name1, name2):
+    """Reads an alignment from the specified XML file, then formats the objects
+    name1 and name2 to show off the alignment
+    """
+
+    fgColors1 = ["brightorange","raspberry"]
+    bgColor1 = "lightorange"
+    fgColors2 = ["skyblue","deepteal",]
+    bgColor2 = "palecyan"
+
+    # Calculate selections
+    align = Alignment(alignFile)
+
+    #display background
+    cmd.show("cartoon", " or ".join([name1,name2]))
+    cmd.set("cartoon_transparency", .3, " or ".join([name1,name2]))
+    cmd.set("cartoon_rect_length", .5, " or ".join([name1,name2]))
+    cmd.set("cartoon_oval_length", .75, " or ".join([name1,name2]))
+    cmd.set("cartoon_loop_radius", .1, " or ".join([name1,name2]))
+    cmd.color(bgColor1,name1)
+    cmd.color(bgColor2,name2)
+
+    #create blocks
+    blocks1 = align.getSelect1ByBlock()
+    blocks2 = align.getSelect2ByBlock()
+    for blk in xrange(len(blocks1)):
+        select1 = "%s and ( %s )" % (name1, blocks1[blk])
+        select2 = "%s and ( %s )" % (name2, blocks2[blk])
+
+        align1="%s_aligned_%s"%(name1,blk)
+        align2="%s_aligned_%s"%(name2,blk)
+
+        cmd.create(align1, name1+" and "+select1)
+        cmd.create(align2, name2+" and "+select2)
+
+        #display blocks
+        cmd.show("cartoon", " or ".join([align1,align2]))
+        cmd.set("cartoon_transparency", 0.0, " or ".join([align1,align2]))
+        cmd.color(fgColors1[blk%len(fgColors1)],align1)
+        cmd.color(fgColors2[blk%len(fgColors2)],align2)
+
+cmd.extend( "displayAlignmentBlocks", displayAlignmentBlocks)
+
+
 #Class to parse alignment xml
 class Alignment:
 
@@ -128,6 +173,18 @@ class Alignment:
             for (pdb1,chain1,pdb2,chain2) in block:
                 res.append("( resi %s and chain %s )"%(pdb2,chain2))
         return " or ".join(res)
+
+    def getSelect1ByBlock(self):
+        return [" or ".join( \
+            ["( resi %s and chain %s )"%(pdb1,chain1) \
+                for (pdb1,chain1,pdb2,chain2) in block]) \
+            for block in self._blocks]
+    def getSelect2ByBlock(self):
+        return [" or ".join( \
+            ["( resi %s and chain %s )"%(pdb2,chain2) \
+                for (pdb1,chain1,pdb2,chain2) in block]) \
+            for block in self._blocks]
+
 
 if __name__ == "__main__":
     file = "/Users/blivens/dev/bourne/1iu9 1h0r.xml"
