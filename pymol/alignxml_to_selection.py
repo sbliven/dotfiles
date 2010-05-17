@@ -3,9 +3,14 @@ from pymol import cmd, stored
 
 #Pymol functions
 def selectAlignment(alignFile, name1=None, name2=None):
-    """Defines two new selections based on the alignment given in alignFile.
+    """usage: selectAlignment, [name1, [name2]]
+    
+    Defines two new selections based on the alignment given in alignFile.
     AlignFile is in the XML format used by CE and BioJava.
 
+    If specified, the selections will be called name1 and name2. Otherwise the
+    names will be taken from the alignment file.
+    
     return the names of the two selections (sele_name1, sele_name2)
     """
     align = Alignment(alignFile)
@@ -28,7 +33,9 @@ cmd.extend( "selectAlignment", selectAlignment )
 
 
 def displayAlignment(alignFile, name1, name2):
-    """Reads an alignment from the specified XML file, then formats the objects
+    """usage: displayAlignment alignFile.xml, name1, name2
+    
+    Reads an alignment from the specified XML file, then formats the objects
     name1 and name2 to show off the alignment
     """
     # Calculate selections
