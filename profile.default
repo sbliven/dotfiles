@@ -36,6 +36,6 @@ export CDPATH
 #export PS1_COLOR="31"
 
 # Maybe start screen?
-if [[ ! $STY && -x `which screen` && ! "ENABLE" ]] ; then
+if [[ ! $STY && -x `which screen 2>/dev/null` && ! "ENABLE" ]] ; then
     screen -xRR
 fi
