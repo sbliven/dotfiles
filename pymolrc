@@ -1,7 +1,21 @@
-run ~/dev/rosettaWS/bin/sequential_residues.py
-run ~/dev/rosettaWS/bin/load_sep.py
+_ feedback push
+_ feedback disable,all,everything
 
-#cd ~/pdb
+import sys
+import os
+
+_ feedback pop
+
+#read in pymol bin
+run ~/.pymol/autorun.py
+
+
+_ feedback push
+_ feedback disable,all,everything
+
+
+#if os.path.abspath(os.curdir) == os.path.expanduser('~') or sys.version_info < (3,5): \
+os.chdir(os.path.expanduser('~/pdb'))
 
 alias centroid_spheres,\
 	hide everything, name CEN; \
@@ -14,9 +28,48 @@ alias show_cys,\
 	show cartoon; \
 	show lines, not (name c+n+o+h); \
 	hide lines, hydrogens; \
-	show sticks, resn cys
+	show sticks, resn cys and name CA+CB+SG
+
+alias pp,\
+    util.cbc;\
+    hide lines;\
+    show cartoon;\
+    show sticks, resn CYS and name CA+CB+SG;\
+    color yellow, name SG
 
 one_letter ={'VAL':'V', 'ILE':'I', 'LEU':'L', 'GLU':'E', 'GLN':'Q', \
 'ASP':'D', 'ASN':'N', 'HIS':'H', 'TRP':'W', 'PHE':'F', 'TYR':'Y',    \
 'ARG':'R', 'LYS':'K', 'SER':'S', 'THR':'T', 'MET':'M', 'ALA':'A',    \
 'GLY':'G', 'PRO':'P', 'CYS':'C'}
+
+
+#Nucleotide visualization
+#http://kpwu.wordpress.com/2006/10/22/pymol-fancy-dna-helix-and-filled-rings/
+#set cartoon_ring_mode, 1 (or 2 or 3)
+#set cartoon_ring_finder, 1 (or 2 or 3 or 4)
+#set cartoon_nucleic_acid_mode, 0 (or 1 or 2 or 3 or 4)
+
+#set cartoon_side_chain_helper
+#rebuild
+
+#set cartoon_ring_transparency, 0.5
+
+#set cartoon_ladder_mode, 0 or 1
+
+#set cartoon_ladder_color, color-name
+#set cartoon_nucleic_acid_color, color-name
+
+#cartoon oval
+#set cartoon_oval_width, 0.8
+
+#cartoon rect
+
+#cartoon dumbbell
+#set cartoon_dumbbell_width, 0.4
+#set cartoon_dumbbell_radius, 0.4
+
+#bg_color white
+hide everything, *
+show cartoon, *
+
+_ feedback pop
