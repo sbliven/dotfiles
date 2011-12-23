@@ -1,3 +1,6 @@
+"""
+Defines the pymol commands selectAlignment, displayAlignment, and displayAlignmentBlocks
+"""
 from xml.dom.minidom import *
 from pymol import cmd, stored
 
