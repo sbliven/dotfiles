@@ -1,7 +1,9 @@
 [ui]
-username = Spencer Bliven <quantum7@gmail.com>
+username = Spencer Bliven <spencer.bliven@gmail.com>
 remotecmd = if [ -e ~/.ssh/environment ]; then source ~/.ssh/environment; fi; hg
 #remotecmd.attu* = '/projects/instr/09wi/cse401/g/hg/hg'
+remotecmd.*bitbucket* = hg
+ssh = ssh -C
 
 [extensions]
 hgext.extdiff =
