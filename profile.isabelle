@@ -13,6 +13,32 @@ test -r /sw/bin/init.sh && /sw/bin/init.sh
 if [ -d /opt ]; then
     PATH="/opt/local/bin:/opt/local/sbin:$PATH"
     MANPATH="/opt/local/share/man:$MANPATH"
+    
+    pyVersion=$(python -c "import sys; print sys.version[:3]")
+    pyDir="/opt/local/Library/Frameworks/Python.framework/Versions/$pyVersion"
+    if [[ -e "$pyDir" ]]; then
+        PYTHONPATH="$pyDir/bin:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/Numeric:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PIL:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PyObjC:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/gtk-2.0:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/lib-dynload:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-darwin:$PYTHONPATH"
+        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-mac:$PYTHONPATH"
+#        for d in "$pyDir/lib/python$pyVersion/"*; do
+#            if [[ -d "$d" ]]; then
+#                echo "$d:"; pause
+#                PYTHONPATH="$pyDir/$d:$PYTHONPATH"
+#                for d2 in "$d/"*; do
+#                    if [[ -d "$d" ]]; then
+#                        PYTHONPATH="$pyDir/$d:$PYTHONPATH"
+#                    fi
+#                done
+#            fi
+#        done
+    fi
 fi
 #Custom installs
 PATH="/usr/local/sbin:$PATH"
@@ -24,12 +50,41 @@ MANPATH="/usr/local/sage/local/share/man:$MANPATH"
 # MySQL
 PATH="/usr/local/mysql/bin:$PATH"
 MANPATH="/usr/local/mysql/man:$MANPATH"
+# GROMACS
+PATH="/opt/local/lib/gromacs/bin:$PATH"
+export GMXLIB="/opt/local/share/gromacs/top"
+# VMD
+VMD_DIR="$(echo "/Applications/_science/VMD/VMD "*".app/Contents/vmd")"
+if [[ -e "$VMD_DIR" ]]; then
+    PATH="$VMD_DIR:$PATH"
+    alias vmd="\"$VMD_DIR/vmd_MACOSXX86\""
+    alias stride="$VMD_DIR/stride_MACOSXX86"
+    alias surf="$VMD_DIR/surf_MACOSXX86"
+    alias tachyon="$VMD_DIR/tachyon_MACOSXX86"
+fi
+#unset VMD_DIR
+#PyMOL
+PYTHONPATH="/opt/local/lib/pymol/modules:$PYTHONPATH"
+#CINT
+CINTSYSDIR=/usr/local/
+export CINTSYSDIR
+#LD_LIBRARY_PATH=.:$CINTSYSDIR:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH
+
+#UbiGraph
+if [ -d /usr/local/UbiGraph ]; then
+    PATH="/usr/local/UbiGraph/bin:$PATH"
+    PYTHONPATH="/usr/local/UbiGraph/examples/Python:$PYTHONPATH"
+fi
+
+
 # home directory
-PATH="~/bin:$PATH"
-MANPATH="~/home:$MANPATH"
+PATH="$HOME/bin:$PATH"
+PYTHONPATH="$HOME/bin:$PYTHONPATH"
+MANPATH="$HOME/home:$MANPATH"
 # current directory
-PATH=".:bin:$PATH"
-MANPATH="man:$MANPATH"
+PATH=".:$PATH:./bin"
+MANPATH="$MANPATH:./man"
 export PATH MANPATH
 export PYTHONPATH
 
@@ -115,7 +170,11 @@ export PS1_COLOR="32"
 #Finder control
 alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
 alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
+alias enableRemoteDisk='defaults write com.apple.NetworkBrowser EnableODiskBrowsing -bool true; defaults write com.apple.NetworkBrowser ODSSupported -bool true; killall Finder'
+alias disableRemoteDisk='defaults write com.apple.NetworkBrowser EnableODiskBrowsing -bool false; defaults write com.apple.NetworkBrowser ODSSupported -bool false; killall Finder'
 
+
+alias mcbackup='/Users/blivens/Library/Application\ Support/minecraft/mcbackup.sh'
 # Workaround for gvim warnings
 function gvim {
     { $(which gvim) "$@"; } 3>&2 2>&1 1>&3 |
@@ -142,7 +201,128 @@ function code_count {
     cat "$1"/*.cc "$1"/*.hh 2>/dev/null
 }
 
-#Forward ssh connections through the baker firewall
-function baker_fw {
-    ssh -L 2200:dig30:22 -l blivens fw.bakerlab.org -N
+#Forward ssh connections through a firewall
+function fw {
+    USAGE=$(cat<<'END'
+fw firewall destination [port]
+fw alias
+
+Generate an ssh tunnel through a firewall & connect through it to the destination.
+Port refers the local port devoted to the tunnel. Only one tunnel may be generated per port.
+Alias refers to a named tunnel, named in .ssh/tunnels
+END
+    )
+    if [[ ! "$#" =~ [1-3] || "$1" == "-h" || "$1" == "--help" ]]; then
+        echo "$USAGE" >&2
+        return 70
+    fi
+
+    TUNNELS=~/.ssh/tunnels
+
+    if [[ "$#" == 1 ]]; then #alias mode
+        TUNNEL=$(egrep -i "^$1	" $TUNNELS 2>/dev/null )
+        if [[ $TUNNEL == "" ]]; then
+            echo "Tunnel $1 not found in $TUNNELS." >&2
+            return 2
+        fi
+        FW=$(echo $TUNNEL|awk '{print $2}')
+        DEST=$(echo $TUNNEL|awk '{print $3}')
+        PORT=$(echo $TUNNEL|awk '{print $4}')
+    else 
+        FW="$1"
+        DEST="$2"
+        PORT="${3:-2222}"
+    fi
+
+    #echo "FW=$FW"
+    #echo "DEST=$DEST"
+    #echo "PORT=$PORT"
+
+    # Create tunnel & establish a connection through.
+    # Tunnel will close when the last connection through it closes.
+    ssh -f -L $PORT:${DEST##*@}:22 $FW 'sleep 10' &&
+        ssh -p $PORT -l "${DEST%%@*}" 127.0.0.1
 }
+
+
+
+#Fix urls in my bibliography
+function sanitizeBibliography {
+    #TODO add options for /url{} wrapping, Quotes, other files,
+    tmpFile="/tmp/Papers.bib"
+    bibFile="${1:-$HOME/Documents/Papers.bib}"
+    probLines="$(nl "$bibFile"|egrep '\= *\{[^}]*$' )"
+    if [[ $probLines != "" ]]; then
+        echo "Unclosed braces:"
+        echo "$probLines"
+        return
+    fi
+    egrep -iv '^[ \t]*(url|uri|local-url|doi|pmid|rating|note|annote) *=' "$bibFile" |
+        sed -E 's/^([ \t]*title[ \t]*=[ \t]*)(\{.*\})([ \t]*,[ \t]*)$/\1"\2"\3/' \
+        > "$tmpFile"
+    mv "$tmpFile" "$bibFile"
+}
+
+function showCA {
+    (
+        pdbID="$1"
+        chain="${2:-_}"
+        resiRegex="${3:-"[^ ]+"}"
+        atomRegex="${4:-CA}"
+
+        if [[ _ = $chain ]]; then
+            chain="."
+        fi
+
+        regex="^ATOM  .{$((12-7))}  *${atomRegex} *.?[A-Z]{3} ${chain} *${resiRegex} *[^ ]? .*$"
+        pdbURL="http://www.rcsb.org/pdb/files/${pdbID}.pdb"
+        
+        cd "$HOME/pdb"
+
+        if [[ ! -e "${pdbID}.pdb" ]]; then
+            wget  "$pdbURL"
+        fi
+
+        #echo "egrep \"$regex\" \"${pdbID}.pdb\""
+        egrep "$regex" "${pdbID}.pdb"
+    )
+}
+
+function trackfile {
+    # usage: trackfile file [timestep]
+    file="${1}"
+    sleepTime="${2:-30}"
+    prevWC=-1
+    nextWC="$(cat "$file"|wc -l)"
+    while (( nextWC > prevWC )); do
+        echo "$nextWC"
+        sleep "$sleepTime"
+        prevWC="$nextWC"
+        nextWC="$(cat "$file"|wc -l)"
+    done
+}
+
+function c {
+   echo "$@" | bc -l
+}
+
+function pdbNumber {
+    sed -nE 's/^ATOM.{9}CA  (...) (.) *([^ ]+).*$/\1  \2      \3/p;/^ENDMDL/q' "$@"
+}
+
+# number headers
+function nh {
+    #echo "$# params:"
+    #for p in "$@"; do echo "'$p'"; done
+
+    local multiHeader=$(( $# > 1 ))
+    while (( $# > 0 )); do 
+        if (( $multiHeader )); then
+            echo "$1:"
+        fi
+        head  -1 "$1" | tr $'\t' $'\n' | nl
+
+        shift #|| { echo break && break; }
+    done
+}
+
