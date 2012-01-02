@@ -4,6 +4,7 @@
 # This is the generic .profile. It contains settings consistent across 
 # multiple hosts. Host-specific variables (like PATH) should be set in
 # ~/.profile.local, which is called after this script.
+#echo "`date`  Running .profile" #|tee -a /Users/blivens/startup_scripts.log
 
 if [ -e `which vim` ]; then
 	export EDITOR=`which vim`
@@ -14,25 +15,13 @@ export LANG=en_US.UTF-8
 
 
 #Useful IPs
-googleIP='72.14.207.99'
+googleIP='74.125.67.100'
 comcastIP='164.109.28.3'
 function checknet {
     ping -aoi 300 $googleIP && date
 }
 
 
-
-# SSH connections
-alias dante='ssh -X blivens@dante.u.washington.edu'
-alias vergil='ssh -X blivens@vergil.u.washington.edu'
-alias attu='ssh -X blivens@attu.cs.washington.edu'
-alias fdante='sftp blivens@dante.u.washington.edu'
-alias fattu='sftp blivens@attu.cs.washington.edu'
-alias aria='rdesktop aria.cs.washington.edu'
-alias forkbomb='ssh -X blivens@forkbomb.cs.washington.edu'
-alias umnak='ssh -X blivens@umnak.cs.washington.edu'
-# alias klicklic='ssh blivens@24.18.146.165'
-alias klicklic='ssh blivens@redaxed.homelinux.com'
 
 #ls options
 export CLICOLOR=TRUE
@@ -45,9 +34,6 @@ alias psa='ps -rcAo user,pid,ppid,%cpu,%mem,rss=MEM,vsz=VMEM,nice,state=STATE,ti
 alias psu='ps -rcU blivens -o user,pid,%cpu,%mem,rss=MEM,vsz=VMEM,nice,state=STATE,time,command'
 
 export CVS_RSH="ssh"
-#export CVSROOT=redaxed.homelinux.com:/proj/CVS
-#export CVSROOT=209.90.226.226:/proj/CVS
-
 
 # PROMPT
 # \[ ... \] is nonprinting 
