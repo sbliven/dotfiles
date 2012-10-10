@@ -50,7 +50,7 @@ if [[ "$-" =~ i ]]; then
     echo interactive
 fi
 
-if [[ -x "$(which autojump)" ]]; then
+if [[ -x "$(which autojump 2>/dev/null)" ]]; then
     #autojump
     #This shell snippet sets the prompt command and the necessary aliases
 
