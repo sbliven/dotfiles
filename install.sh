@@ -62,6 +62,7 @@ gnuplot	.gnuplot
 hgrc	.hgrc
 pymolrc	.pymolrc
 pymol	.pymol
+gitconfig	.gitconfig
 END
 
 #select the proper local profile
