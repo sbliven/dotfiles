@@ -1,8 +1,12 @@
 [ui]
 username = Spencer Bliven <spencer.bliven@gmail.com>
-remotecmd = if [ -e ~/.ssh/environment ]; then source ~/.ssh/environment; fi; hg
+# Note: good idea, but not implemented as of Jan 2012. 
+# http://thread.gmane.org/gmane.comp.version-control.mercurial.devel/44418
+# http://mercurial.selenic.com/bts/issue359
+
+#remotecmd = if [ -e ~/.ssh/environment ]; then source ~/.ssh/environment; fi; hg
 #remotecmd.attu* = '/projects/instr/09wi/cse401/g/hg/hg'
-remotecmd.*bitbucket* = hg
+#remotecmd.*bitbucket* = hg
 ssh = ssh -C
 
 [extensions]
