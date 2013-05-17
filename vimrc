@@ -1,5 +1,17 @@
-set mouse=a
+" Include plugins from .vim/bundle/
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+execute pathogen#infect()
+
+" Colorscheme
 syntax enable
+"set background=light "defaults to autodetect
+let g:solarized_visibility="normal" " low|normal|high
+colorscheme solarized
+
+"locallize all the .un~ files
+set undodir^=~/.vim/undo
+
+set mouse=a
 
 "for programming
 set autoindent
@@ -103,3 +115,7 @@ let g:ctags_title=1
 "    let g:ctags_args='-I __declspec+'
 "if a ctags file already exists:
 "CTAGS
+
+" Custom foldcommand
+"set foldmethod=expr foldexpr=CountDepth(v:lnum)
+so ~/.vim/misc/CountDepth.vim
