@@ -5,23 +5,35 @@
 # http://www.pymolwiki.org/index.php?title=Color_Objects
 #
 #####################################################################
-from pymol import cmd
+from pymol import cmd,util
 
-def color_obj(rainbow=0):
+def color_obj(rainbow=0,cnc=1):
     """
 AUTHOR
 
         Gareth Stockwell
+        
+        Modified by Spencer Bliven
 
 USAGE
 
-        color_obj(rainbow=0)
+        color_obj(rainbow=0, cnc=0)
 
+ARGUMENTS
+
+        rainbow = integer: 0 to use the 22 named colors, or 1 to generate
+        a rainbow based on the number of objects currently
+
+        cnc = integer: 0 to color all atoms by object, 1 to color non-carbon
+        atoms according to their element.
+
+NOTES
         This function colours each object currently in the PyMOL heirarchy
         with a different colour.  Colours used are either the 22 named
         colours used by PyMOL (in which case the 23rd object, if it exists,
         gets the same colour as the first), or are the colours of the rainbow
 
+        If cnc is set, color non-carbon atoms by their element
 SEE ALSO
 
         util.color_objs()
@@ -29,6 +41,7 @@ SEE ALSO
 
     # Process arguments
     rainbow = int(rainbow)
+    cnc = int(cnc)
 
     # Get names of all PyMOL objects
     obj_list = cmd.get_names('objects')
@@ -70,6 +83,9 @@ SEE ALSO
             i = i+1
             if(i == ncolours):
                 i = 0
+    if cnc:
+        #color non-carbons appropriately
+        util.cnc()
 
 
 # HSV to RGB routine taken from Robert L. Campbell's color_b.py script
