@@ -81,6 +81,8 @@ if [[ -x "$(which autojump 2>/dev/null)" ]]; then
 
     AUTOJUMP='{ (autojump -a "$(pwd -P)"&)>/dev/null 2>>${HOME}/.autojump_errors;} 2>/dev/null'
     if [[ ! $PROMPT_COMMAND =~ autojump ]]; then
+        PROMPT_COMMAND="${PROMPT_COMMAND%;}"
+        PROMPT_COMMAND="${PROMPT_COMMAND%; }"
         export PROMPT_COMMAND="${PROMPT_COMMAND:-:} && $AUTOJUMP"
     fi 
     alias jumpstat="autojump --stat"
