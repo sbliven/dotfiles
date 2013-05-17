@@ -1,0 +1,22 @@
+#!/usr/bin/python
+from pymol import cmd,util
+
+def func():
+    """DESCRIPTION
+
+USAGE
+
+ARGUMENTS
+
+NOTES
+
+EXAMPLES
+
+AUTHOR
+
+    Spencer Bliven
+"""
+    pass
+
+#cmd.extend("func",func)
+

@@ -16,6 +16,7 @@ _ feedback disable,all,everything
 
 #if os.path.abspath(os.curdir) == os.path.expanduser('~') or sys.version_info < (3,5): \
 os.chdir(os.path.expanduser('~/pdb'))
+cmd.set("fetch_path", os.path.expanduser('~/pdb'))
 
 alias centroid_spheres,\
 	hide everything, name CEN; \
@@ -30,12 +31,17 @@ alias show_cys,\
 	hide lines, hydrogens; \
 	show sticks, resn cys and name CA+CB+SG
 
-alias pp,\
-    util.cbc;\
-    hide lines;\
-    show cartoon;\
-    show sticks, resn CYS and name CA+CB+SG;\
-    color yellow, name SG
+## Short Forms
+
+#pretty print! Display as cartoons plus ligands, color by chain
+#applies to everything!
+import pretty_protein
+cmd.extend("pp",pretty_protein.pretty_protein)
+# pretty rainbow, applies to everything
+alias pr, pretty_protein; chainbow_obj; util.cnc
+
+import show_chain
+cmd.extend("sc",show_chain.show_chain)
 
 one_letter ={'VAL':'V', 'ILE':'I', 'LEU':'L', 'GLU':'E', 'GLN':'Q', \
 'ASP':'D', 'ASN':'N', 'HIS':'H', 'TRP':'W', 'PHE':'F', 'TYR':'Y',    \
@@ -69,7 +75,7 @@ one_letter ={'VAL':'V', 'ILE':'I', 'LEU':'L', 'GLU':'E', 'GLN':'Q', \
 #set cartoon_dumbbell_radius, 0.4
 
 #bg_color white
-hide everything, *
-show cartoon, *
+#hide everything, *
+#show cartoon, *
 
 _ feedback pop
