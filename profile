@@ -15,7 +15,9 @@ export LANG=en_US.UTF-8
 
 
 #Useful IPs
-googleIP='74.125.67.100'
+#googleIP='74.125.67.100'
+#googleIP='74.125.239.5'
+googleIP='74.125.224.196'
 comcastIP='164.109.28.3'
 function checknet {
     ping -aoi 300 $googleIP && date
