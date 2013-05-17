@@ -14,19 +14,20 @@ if [ -d /opt ]; then
     PATH="/opt/local/bin:/opt/local/sbin:$PATH"
     MANPATH="/opt/local/share/man:$MANPATH"
     
-    pyVersion=$(python -c "import sys; print sys.version[:3]")
-    pyDir="/opt/local/Library/Frameworks/Python.framework/Versions/$pyVersion"
-    if [[ -e "$pyDir" ]]; then
-        PYTHONPATH="$pyDir/bin:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/Numeric:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PIL:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PyObjC:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/gtk-2.0:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/lib-dynload:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-darwin:$PYTHONPATH"
-        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-mac:$PYTHONPATH"
+#    pyVersion=$(python -c "import sys; print sys.version[:3]")
+#    pyDir="/opt/local/Library/Frameworks/Python.framework/Versions/$pyVersion"
+#    if [[ -e "$pyDir" ]]; then
+#        PYTHONPATH="$pyDir/bin:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/Numeric:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PIL:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/PyObjC:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/site-packages/gtk-2.0:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/lib-dynload:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-darwin:$PYTHONPATH"
+#        PYTHONPATH="$pyDir/lib/python$pyVersion/plat-mac:$PYTHONPATH"
+
 #        for d in "$pyDir/lib/python$pyVersion/"*; do
 #            if [[ -d "$d" ]]; then
 #                echo "$d:"; pause
@@ -38,7 +39,13 @@ if [ -d /opt ]; then
 #                done
 #            fi
 #        done
-    fi
+
+#    fi
+    function python_select {
+        sudo port select --set python python$1 &&
+            sudo port select --set ipython ipython$1 ||
+            port select --list python
+    }
 fi
 #Custom installs
 PATH="/usr/local/sbin:$PATH"
