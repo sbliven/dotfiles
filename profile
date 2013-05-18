@@ -7,7 +7,7 @@
 #echo "`date`  Running .profile" #|tee -a /Users/blivens/startup_scripts.log
 
 if [ -e `which vim` ]; then
-	export EDITOR=`which vim`
+    export EDITOR=`which vim`
 fi
 
 export LC_ALL=en_US.UTF-8
@@ -19,9 +19,9 @@ export LANG=en_US.UTF-8
 #googleIP='74.125.239.5'
 googleIP='74.125.224.196'
 comcastIP='164.109.28.3'
-function checknet {
-    ping -aoi 300 $googleIP && date
-}
+#function checknet {
+    #ping -aoi 300 $googleIP && date
+#}
 
 
 
