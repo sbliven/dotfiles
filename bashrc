@@ -42,7 +42,7 @@ fi
 
 
 #Set process limit to keep recursion from going out of control
-ulimit -Su 128
+#ulimit -Su 128
 
 if [[ "$-" =~ i ]]; then
     #allow chats
