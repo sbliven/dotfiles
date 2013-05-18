@@ -12,7 +12,7 @@ About
 
 These are my config files for bash, vim, git, pymol, etc. They are intended for my personal use and are not intended for redistribution.
 
-Scripts written by me (as indicated in the file header) are public domain unless otherwise specified. I have tried to indicate sources where I've used other people's code or included third-party libraries, but I haven't thoroughly scrutenized the licenses of everything included here. My appologies if anything is misused.
+Scripts written by me (as indicated in the file header) are public domain unless otherwise specified. I have tried to indicate sources where I've used other people's code or included third-party libraries, but I haven't thoroughly scrutinized the licenses of everything included here. My apologies if anything is misused.
 
 Installation
 ------------
@@ -20,7 +20,12 @@ Installation
 From your home directory, clone the repository:
 
     git clone https://github.com/sbliven/dotfiles.git ~/.dotfiles
-    
+
+Update the submodules
+
+    git submodule init
+    git submodule update
+
 Now run install.sh
 
     .dotfiles/install.sh
