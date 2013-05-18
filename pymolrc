@@ -18,6 +18,8 @@ _ feedback disable,all,everything
 os.chdir(os.path.expanduser('~/pdb'))
 cmd.set("fetch_path", os.path.expanduser('~/pdb'))
 
+set max_threads, 8
+
 alias centroid_spheres,\
 	hide everything, name CEN; \
 	create centroids, name CEN; \
