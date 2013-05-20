@@ -63,6 +63,7 @@ hgrc	.hgrc
 pymolrc	.pymolrc
 pymol	.pymol
 gitconfig	.gitconfig
+MacOSX	.MacOSX
 END
 
 #select the proper local profile
