@@ -63,6 +63,8 @@ hgrc	.hgrc
 pymolrc	.pymolrc
 pymol	.pymol
 gitconfig	.gitconfig
+synergy.conf	.synergy.conf
+cvsignore	.cvsignore
 END
 
 #select the proper local profile
