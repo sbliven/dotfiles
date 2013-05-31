@@ -63,3 +63,5 @@
     rh2 = reset HEAD^^ --hard
 	subbranch = "!for d in *; do ( cd $d; echo $d; git b; ) ; done"
 
+[core]
+	excludesfile = ~/.cvsignore

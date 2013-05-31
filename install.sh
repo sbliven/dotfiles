@@ -64,6 +64,8 @@ pymolrc	.pymolrc
 pymol	.pymol
 gitconfig	.gitconfig
 MacOSX	.MacOSX
+synergy.conf	.synergy.conf
+cvsignore	.cvsignore
 END
 
 #select the proper local profile
