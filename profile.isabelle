@@ -182,6 +182,10 @@ alias disableRemoteDisk='defaults write com.apple.NetworkBrowser EnableODiskBrow
 
 
 alias mcbackup='/Users/blivens/Library/Application\ Support/minecraft/mcbackup.sh'
+
+alias Xpra='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra'
+alias Xpra_pi='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra attach --encoding=png ssh:pi@192.168.2.17'
+
 # Workaround for gvim warnings
 #function gvim {
 #    { $(which gvim) "$@"; } 3>&2 2>&1 1>&3 |
