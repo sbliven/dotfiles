@@ -19,28 +19,23 @@ green="#858599990000"
 style=${1:-dark}
 #style=light
 
-# Check parameters
 case $style in
-    dark)
-        ;;
-    light)
-        ;;
-    *)
-        echo "usage: $0 [dark|light]"
-        exit
-esac
-
-gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_background" --type bool false
-gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_colors" --type bool false
-gconftool-2 --set "/apps/gnome-terminal/profiles/Default/palette" --type string "$base02:$red:$green:$yellow:$blue:$magenta:$cyan:$base2:$base03:$orange:$base01:$base00:$base0:$violet:$base1:$base3"
-
-case $style in
-    dark)
-        gconftool-2 --set "/apps/gnome-terminal/profiles/Default/background_color" --type string "$base03"
-        gconftool-2 --set "/apps/gnome-terminal/profiles/Default/foreground_color" --type string "$base0"
-        ;;
-    light)
-        gconftool-2 --set "/apps/gnome-terminal/profiles/Default/background_color" --type string "$base3"
-        gconftool-2 --set "/apps/gnome-terminal/profiles/Default/foreground_color" --type string "$base00"
-        ;;
+dark)
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_background" --type bool false
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_colors" --type bool false
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/palette" --type string "$base02:$red:$green:$yellow:$blue:$magenta:$cyan:$base2:$base03:$orange:$base01:$base00:$base0:$violet:$base1:$base3"
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/background_color" --type string "$base03"
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/foreground_color" --type string "$base0"
+    ;;
+light)
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_background" --type bool false
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/use_theme_colors" --type bool false
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/palette" --type string "$base02:$red:$green:$yellow:$blue:$magenta:$cyan:$base2:$base03:$orange:$base01:$base00:$base0:$violet:$base1:$base3"
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/background_color" --type string "$base3"
+    gconftool-2 --set "/apps/gnome-terminal/profiles/Default/foreground_color" --type string "$base00"
+    ;;
+*)
+    echo "usage: $0 [dark|light]"
+    exit
+    ;;
 esac
