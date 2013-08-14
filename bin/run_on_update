@@ -1,0 +1,38 @@
+#!/bin/bash
+# By Spencer Bliven <spencer@bliven.us>. 2013
+
+
+usage="""usage: $0 file command...
+
+watch 'file' for updates. Whenever the modification time on file changes,
+execute 'command'.
+"""
+
+if [[ $# < 1 ]]; then
+    echo "$usage"
+    exit 2
+fi
+
+
+file="$1"
+shift
+
+DELAY=1
+
+lastupdate=$( date -r "$file" "+%s" )
+
+date -r "$file"
+echo "Executing: $@"
+"$@"
+
+while true; do
+    update=$( date -r "$file" "+%s" )
+    if (( $update != $lastupdate )); then
+        lastupdate=$update
+        date -r "$file"
+        "$@"
+    fi
+
+    sleep $DELAY
+done
+
