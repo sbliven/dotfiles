@@ -1,0 +1,93 @@
+#!/bin/bash
+# vim: set filetype=sh
+#
+# Usage: checkservers [host ...]
+#
+# Pings each server in the list and creates a growl alert if there is no response
+#
+# Returns:
+#  0 if all servers are up
+#  1 if any server is down
+#  2 if google.com is down, probably indicating a network outage
+
+
+HOSTS="${1:-pisaster.ucsd.edu enhydra.ucsd.edu topicpages.ploscompbiol.org code.open-bio.org}"
+
+# An always-up website. If it's down, assume a bad network connection and abort
+REFERENCE="google.com"
+
+TIMEOUT=2
+
+GN=/usr/local/bin/growlnotify
+PING=/sbin/ping
+WGET=/opt/local/bin/wget
+
+
+#echo "HOSTS: $HOSTS"
+
+
+# Usage: log priority message...
+# Priorities range from 1 (urgent) to 5 (trivial)
+function log() {
+    local loglevel=2
+    local priority="$1"
+    shift
+
+    if (( $priority <= $loglevel )); then
+        echo "$@"
+    fi
+}
+
+# Takes a hostname as a parameter
+# Returns 0 if an HTTP connection can be opened to the server, or 1 otherwise
+function checkhttp() {
+    $WGET -T $TIMEOUT -t 1 -O /dev/null -o /dev/stdout "$1"|egrep -q "^Connecting to.*connected.$"
+    return $?
+}
+# Takes a hostname as a parameter
+# Returns 0 if the server responds to ping, or >0 otherwise
+function checkping() {
+    $PING -c 1 -t $TIMEOUT "$1" >/dev/null 2>&1
+    return $?
+}
+# Takes a hostname as a parameter
+# Returns 0 if the server responds, or 1 otherwise
+function checkhost() {
+    if checkping "$@"; then
+        return 0
+    elif checkhttp "$@"; then
+        return 0
+    fi
+
+    # Make sure we're still online, and exit if not
+    if [[ "$1" != "$REFERENCE" ]]; then
+        checkonline
+    fi
+
+    return 1
+}
+
+# Check internet connection
+function checkonline() {
+    if ! checkhost $REFERENCE 2>&1
+    then
+        log 3 "Computer offline. Aborting server check." 1>&2
+        exit 2
+    fi
+}
+
+checkonline
+
+# Check hosts
+rtn=0
+for host in $HOSTS; do
+    log 4 "Checking $host"
+    if ! checkhost "$host" 2>&1
+    then
+        log 2 "OFFLINE  $host"
+        $GN -s -n "$0" -d "$0 $host" -m "Unable to contact $host" -p "Very Low" -t "$(basename "$0")"
+        rtn=1
+    fi
+done
+
+exit $rtn
