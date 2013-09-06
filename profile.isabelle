@@ -84,6 +84,10 @@ if [ -d /usr/local/UbiGraph ]; then
     PYTHONPATH="/usr/local/UbiGraph/examples/Python:$PYTHONPATH"
 fi
 
+#Ruby environment manager
+if [ -d $HOME/.rvm/bin ]; then
+    PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+fi
 
 # home directory
 PATH="$HOME/bin:$PATH"
