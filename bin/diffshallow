@@ -1,0 +1,68 @@
+#!/bin/bash
+# Compares two directories by file name.
+# Does not compare file contents
+
+function star() {
+    until [ -z "$1" ]; do
+        for f in "$1"/*; do
+            if [[ ! "$f" == "$1/*" ]]; then
+                echo "$f"
+            fi
+        done
+        for f in "$1"/.*; do
+            if [[ "$f" != "$1/.*" && "$f" != "$1/." && "$f" != "$1/.." ]]; then
+                echo "$f"
+            fi
+        done
+        shift
+    done
+}
+function fileunion() {
+    {   star "$1" "$2" |
+            while read f; do
+                basename "$f";
+            done
+    } | sort | uniq | sed 's/ /\\ /g' #'s/\(^.*$\)/"\1"/'
+}
+
+function diffshallow() {
+    local l="$1";   #full path
+    local r="$2";
+
+    #one exits
+    if [[ ! -e "$r" ]]; then
+        echo "- $l"
+    fi
+    if [[ ! -e "$l" ]]; then
+        echo "+ $r"
+    fi
+    if [[ ! ( -e "$l" && -e "$r" ) ]]; then
+        return 0;
+    fi
+    #both symbolic links
+    if [[ ( -L "$l" && ! -L "$r" ) || ( ! -L "$l" && -L "$r" ) ]]; then
+        echo "-l $l"
+        echo "+l $r"
+        return 0
+    fi
+    #both regular files
+    if [[ -f "$l" && -f "$r" ]]; then
+        return 1
+    fi
+    #both directories
+    if [[ -d "$l" && -d "$r" ]]; then
+        fileunion "$l" "$r" |
+            while read f; do
+                diffshallow "$l/$f" "$r/$f"
+            done
+        
+        return 1
+    fi
+
+    #unknown difference
+    echo "-? $l"
+    echo "+? $r"
+    return 0
+}
+
+diffshallow "$@"

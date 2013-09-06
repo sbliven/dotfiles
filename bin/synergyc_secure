@@ -1,0 +1,26 @@
+#!/bin/bash
+# Opens a secure synergyc connection
+# 
+# usage: synergyc_secure [synergyc options] server
+
+SERVER="${1:-enhydra}"
+shift
+LPORT=24800
+RPORT=24800
+
+LOG=/var/log/system.log
+LOG=/dev/null
+{
+    ssh -x -f -L $LPORT:localhost:$RPORT -o ExitOnForwardFailure=yes "$SERVER" 'sleep 10' &&
+    synergyc --no-restart -f "$@" localhost:$LPORT >>"$LOG" 2>&1 &
+
+    wait
+    if [[ -e $(which growlnotify) ]]; then
+        growlnotify -s  -n "$0" -d "$0" -m "Connection lost" -p "Very Low" -t "$(basename "$0")"
+    else
+        echo "Synergyc_secure: Connection lost" >&2
+    fi
+} &
+
+
+
