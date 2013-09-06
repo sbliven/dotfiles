@@ -1,0 +1,83 @@
+#!/bin/bash
+# By Spencer Bliven <spencer@bliven.us>. 2013
+
+# Update frequency
+DELAY=1
+
+usage()
+{
+cat << EOF
+usage: $0 [-f file ]* command...
+
+watch 'file' for updates. Whenever the modification time on file changes,
+execute 'command'. Additional files can be watched with additional -f
+arguments.
+EOF
+}
+
+declare -a WATCH_FILES
+while getopts "hf:" OPTION
+do
+    case $OPTION in
+        h)
+            usage
+            exit 1
+            ;;
+        f)
+            WATCH_FILES+=("$OPTARG")
+            ;;
+        ?)
+            usage
+            exit 1
+            ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
+if [[ $# < 1 ]]; then
+    usage
+    exit 1
+fi
+
+declare -a lastupdate
+declare -a update
+
+# initialize timestamps
+echo "Watching ${#WATCH_FILES[@]} files:"
+for ((i=0;i<${#WATCH_FILES[@]};i++)); do
+    lastupdate[$i]="$( date -r "${WATCH_FILES[$i]}" "+%s" )"
+done
+# print info; can't be combined above since executes in a subshell
+for ((i=0;i<${#WATCH_FILES[@]};i++)); do
+    echo -n "    ${WATCH_FILES[$i]}"
+    echo -n $'\t'
+    date -r "${WATCH_FILES[$i]}" '+%x %X'
+done | column -t -s$'\t'
+
+declare -p lastupdate
+# run once
+"$@"
+
+# enter run loop if we're watching files
+while [[ ${#WATCH_FILES[@]} > 0 ]]; do
+    # check timestamps for ANY modification
+    changed=
+    for ((i=0;i<${#WATCH_FILES[@]};i++)); do
+        update=$( date -r "${WATCH_FILES[$i]}" "+%s" )
+        if [ "$update" != "${lastupdate[$i]}" ]; then
+            changed=1
+            echo -n "UPDATED: ${WATCH_FILES[$i]}"
+            echo -n $'\t'
+            date -r "${WATCH_FILES[$i]}" '+%x %X'
+            lastupdate[$i]=$update
+        fi
+    done
+
+    # run if changed
+    if [ $changed ]; then
+        "$@"
+    fi
+
+    sleep $DELAY
+done
+
