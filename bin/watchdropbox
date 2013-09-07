@@ -22,13 +22,14 @@ SRC="/Users/blivens/Documents/Dropbox/fromPJK"
 DST="/Users/blivens/Movies/fromPJK"
 
 CP="/bin/cp"
-RM="echo /bin/rm"
+RM="/bin/rm"
 SLEEP=/bin/sleep
 GN=/usr/local/bin/growlnotify
 LN=/bin/ln
 
 SLEEP_TIME=10
 MIN_SIZE=1000
+MIN_TIME=60
 
 # List of files to ignore. Stored as an associative array
 declare -A EXCLUDE_FILES
@@ -57,34 +58,25 @@ for file in *; do
         echo "Error: Recursion into directories not implemented by $0" >&2
 
     # Copy the file, if needed
-    elif [[ -f "$file" &&
-        $(stat -f%z "$file") > $MIN_SIZE ]] &&
-        ( [[ ! -f "$DST/$file" ]] || ! diff -q "$file" "$DST/$file" >/dev/null 2>&1 )
-    then
-        echo Copying "$file"
-        $CP "$file" "$DST/$file" &
+    elif [[ -f "$file" && $(stat -f%z "$file") -gt $MIN_SIZE ]]; then
+        # 1st run: copy the file
+        # 2nd run: remove file if it hasn't changed in $MIN_TIME
+        if [[ -e "$DST/$file" ]]; then
+            if [ "$file" -ef "$DST/$file" ] && # Still the same file
+                (( $(date +%s) - $(stat -f%m "$file") > $MIN_TIME )) # hasn't changed recently
+            then
+                notify "$file"
+                $RM "$file"
+            else
+                echo "Waiting for $file"
+            fi
+        else
+            echo Copying "$file"
+            $LN "$file" "$DST/$file"
+            #$CP "$file" "$DST/$file" &
+        fi
     else
-        echo Didnt copy "$file" to "$DST/$file"
-    fi
-done
-
-# All copies to finish, and then wait a few seconds to allow other processes to
-# flush updated files
-wait
-$SLEEP $SLEEP_TIME
-
-# Delete the source if it was copied successfully
-for file in *; do
-    if [ ! -z "${EXCLUDE_FILES["$file"]+x}" ]; then
-        continue
-    fi
-
-    if [[ -f "$DST/$file" && 
-        $(stat -f%z "$file") > $MIN_SIZE ]] &&
-        diff -q "$file" "$DST/$file" >/dev/null 2>&1
-    then
-        notify "$file"
-        $RM "$file"
+        echo "Ignoring $file"
     fi
 done
 
