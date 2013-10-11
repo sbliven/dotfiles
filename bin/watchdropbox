@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 # vim: set filetype=sh
 #
-# This script is intended to be run as a cron job.
+# usage: watchdropbox [src dst]
 #
-# It checks a directory and copies changes (if any) to another directory.
+# Checks directory <src> and copies changes (if any) to <dst> directory.
 # If the copy was successful, (eg the results match), deletes the original
-# file.
+# file upon its next run.
 #
 # This behavior is useful for keeping a dropbox empty. In the case where files
 # are still syncing, the copy will result in a truncated version, so the
 # original will not be deleted. Thus, the next run can fix the mistake.
+# (Note the above doesn't really apply if hard links are used for copying, but
+# is important for direct copying)
+#
+# This script is intended to be run as a cron job. Every 15 minutes works well:
+# */15 * * * * /path/to/watchdropbox /.../Dropbox/folder /.../local/folder
 #
 
 # Associative arrays require bash 4
@@ -18,28 +23,32 @@
     exit 1
 }
 
-SRC="/Users/blivens/Documents/Dropbox/fromPJK"
-DST="/Users/blivens/Movies/fromPJK"
+SRC="${1:-/Users/blivens/Documents/Dropbox/fromPJK}"
+DST="${2:-/Users/blivens/Movies/fromPJK}"
 
+# Explicit paths, since cron doesn't set up a complete PATH
 CP="/bin/cp"
 RM="/bin/rm"
 SLEEP=/bin/sleep
+# Optional growl installation
 GN=/usr/local/bin/growlnotify
 LN=/bin/ln
 
-SLEEP_TIME=10
+#ignore files smaller than this (probably loading)
 MIN_SIZE=1000
+#ignore files that have been modified more recently than this (seconds)
 MIN_TIME=60
 
 # List of files to ignore. Stored as an associative array
 declare -A EXCLUDE_FILES
 EXCLUDE_FILES=(["Icon"]=  ["Spencer Movie List.txt"]= )
-#EXCLUDE_FILES=(["Icon"]=  ["Spencer"]= )
 
 function notify() {
-    $GN --sticky --name "$0" --identifier "$0" \
-        --message "New Videos copied from Dropbox${1+: }${1}" \
-        --priority "Normal" --title "$(basename "$0")"
+    if [ -x $GN ]; then
+        $GN --sticky --name "$0" --identifier "$0" \
+            --message "New Videos copied from Dropbox${1+: }${1}" \
+            --priority "Normal" --title "$(basename "$0")"
+    fi
 }
 
 #echo "Excluded:"
@@ -72,6 +81,7 @@ for file in *; do
             fi
         else
             echo Copying "$file"
+            # Use hard links when possible, or full copy if this errors.
             $LN "$file" "$DST/$file"
             #$CP "$file" "$DST/$file" &
         fi
