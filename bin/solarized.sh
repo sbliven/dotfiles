@@ -1,3 +1,12 @@
+#!/bin/bash
+# Configure gnome-terminal to use solarized colorscheme
+# usage: solarized.sh [dark|light]
+
+if ! which -s gconftool-2; then
+    echo "Error: gconftool not found." >&2
+    exit 1
+fi
+
 base03="#00002B2B3636"
 base02="#070736364242"
 base01="#58586E6E7575"
