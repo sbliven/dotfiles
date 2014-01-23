@@ -1,5 +1,8 @@
 #!/bin/bash
 # Links config files to their dotfile equivalent
+# I generally check out the repository as ~/.dotfiles, then run this script
+# from the home directory as `.dotfiles/install.sh`. However, other repository
+# locations should work fine as long as you don't move it after installing.
 
 #dir to put dotfiles in
 ROOT="$HOME";
@@ -18,10 +21,21 @@ then
         CONFIG="$PWD/$0"
     fi
     #assert [ -e $CONFIG ]
-    CONFIG=`dirname $CONFIG`
+    CONFIG="`dirname $CONFIG`"
 fi
 
-# Safely symlink two files
+# catch potential errors
+if [ ! -d "$CONFIG" ]; then
+    echo "Error: $CONFIG does not exist or is not a directory" >&2
+    exit 1;
+fi
+
+# Update submodules
+(
+    cd $CONFIG && git submodule update --init --rebase --recursive
+)
+
+# Function to safely symlink two files
 # If the destintion is already a file, move it out of the way or throw an error
 safeLink() {
     local src="$1" dst="$2";
