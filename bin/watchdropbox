@@ -23,7 +23,7 @@
     exit 1
 }
 
-SRC="${1:-/Users/blivens/Documents/Dropbox/fromPJK}"
+SRC="${1:-/Users/blivens/Dropbox/fromPJK}"
 DST="${2:-/Users/blivens/Movies/fromPJK}"
 
 # Explicit paths, since cron doesn't set up a complete PATH
@@ -54,7 +54,7 @@ function notify() {
 #echo "Excluded:"
 #for file in "${!EXCLUDE_FILES[@]}"; do echo "  $file"; done
 
-cd "$SRC"
+cd "$SRC" || exit 1
 
 for file in *; do
     if [ ! -z "${EXCLUDE_FILES["$file"]+x}" ]; then
