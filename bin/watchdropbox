@@ -82,8 +82,8 @@ for file in *; do
         else
             echo Copying "$file"
             # Use hard links when possible, or full copy if this errors.
-            $LN "$file" "$DST/$file"
-            #$CP "$file" "$DST/$file" &
+            #$LN "$file" "$DST/$file"
+            $CP "$file" "$DST/$file" &
         fi
     else
         echo "Ignoring $file"
