@@ -7,3 +7,6 @@
 [submodule "vim/bundle/vim-sensible"]
 	path = vim/bundle/vim-sensible
 	url = git@github.com:tpope/vim-sensible.git
+[submodule "solarized"]
+	path = solarized
+	url = git://github.com/altercation/solarized.git
