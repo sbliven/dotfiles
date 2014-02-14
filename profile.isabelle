@@ -43,7 +43,8 @@ if [ -d /opt ]; then
 #    fi
     function python_select {
         sudo port select --set python python$1 &&
-            sudo port select --set ipython ipython$1 ||
+            sudo port select --set ipython ipython$1 &&
+            sudo port select --set pip pip$1 ||
             port select --list python
     }
 fi
@@ -83,6 +84,10 @@ if [ -d /usr/local/UbiGraph ]; then
     PATH="/usr/local/UbiGraph/bin:$PATH"
     PYTHONPATH="/usr/local/UbiGraph/examples/Python:$PYTHONPATH"
 fi
+
+# Heroku Toolbelt
+[ -d /usr/local/heroku ] &&
+    PATH="/usr/local/heroku/bin:$PATH"
 
 #Ruby environment manager
 if [ -d $HOME/.rvm/bin ]; then
@@ -189,6 +194,8 @@ alias mcbackup='/Users/blivens/Library/Application\ Support/minecraft/mcbackup.s
 
 alias Xpra='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra'
 alias Xpra_pi='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra attach --encoding=png ssh:pi@192.168.2.17'
+
+alias psiwin='rdesktop -d psich -u bliven_s winterm1'
 
 # Workaround for gvim warnings
 #function gvim {
