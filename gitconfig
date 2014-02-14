@@ -4,7 +4,7 @@
 [credential]
     helper = osxkeychain
 [push]
-    default = simple
+    default = upstream
 [alias]
     stat = status
     st = status
