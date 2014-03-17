@@ -51,6 +51,32 @@ function notify() {
     fi
 }
 
+# criteria for detecting syncing as finished
+
+function finishedcopying() {
+    local src="$1"
+    local dst="$2"
+
+    # both exist
+    if [[ ! -e "$src" || ! -e "$dst" ]]
+    then
+        return 1
+    fi
+
+    if [[ "$src" -ef "$dst" ]]
+    then
+        # hard-linked files
+        (( $(date +%s) - $(stat -f%m "$src") > $MIN_TIME )) # hasn't changed recently
+        return $?
+    else
+        #full copies
+        (( $(date +%s) - $(stat -f%m "$src") > $MIN_TIME )) && # hasn't changed recently
+        (( $(stat -f%z "$src") == $(stat -f%z "$dst") )) && #same size
+        (( $(stat -f%z "$dst") > $MIN_SIZE ))
+        return $?
+    fi
+}
+
 #echo "Excluded:"
 #for file in "${!EXCLUDE_FILES[@]}"; do echo "  $file"; done
 
@@ -71,10 +97,10 @@ for file in *; do
         # 1st run: copy the file
         # 2nd run: remove file if it hasn't changed in $MIN_TIME
         if [[ -e "$DST/$file" ]]; then
-            if [ "$file" -ef "$DST/$file" ] && # Still the same file
-                (( $(date +%s) - $(stat -f%m "$file") > $MIN_TIME )) # hasn't changed recently
+            if finishedcopying "$file" "$DST/$file" 
             then
                 notify "$file"
+                echo "Deleting $file"
                 $RM "$file"
             else
                 echo "Waiting for $file"
