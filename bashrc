@@ -10,12 +10,11 @@ shopt -s cdspell
 shopt -s checkwinsize
 shopt -s cmdhist
 shopt -s extglob
-shopt -s nullglob
 shopt -s histappend
 shopt -s hostcomplete
 shopt -s interactive_comments
 shopt -s no_empty_cmd_completion
-shopt -s nullglob
+shopt -s failglob
 # report completed jobs immediately
 set -b
 
