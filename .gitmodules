@@ -10,3 +10,6 @@
 [submodule "solarized"]
 	path = solarized
 	url = git://github.com/altercation/solarized.git
+[submodule "Pymol-script-repo"]
+	path = Pymol-script-repo
+	url = git://github.com/Pymol-Scripts/Pymol-script-repo.git
