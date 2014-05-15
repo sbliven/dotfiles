@@ -10,6 +10,7 @@ RPORT=24800
 
 LOG=/var/log/system.log
 LOG=/dev/null
+LOG=/var/log/synergyc.log
 {
     ssh -x -f -L $LPORT:localhost:$RPORT -o ExitOnForwardFailure=yes "$SERVER" 'sleep 10' &&
     synergyc --no-restart -f "$@" localhost:$LPORT >>"$LOG" 2>&1 &

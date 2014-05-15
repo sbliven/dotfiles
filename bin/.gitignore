@@ -1,0 +1,5 @@
+# Locally installed tools, not suitable for distribution
+Inspect*
+macosver
+subl
+vimgdb*

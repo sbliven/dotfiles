@@ -7,8 +7,6 @@ Functions provided:
     * corexDiffSAUpdateB obj, corex1, corex2
         loads the difference in surface areas between two corex runs into the
         b-factors of obj
-    * colorByB obj
-        Colors obj in a rainbow according to the b-factors.
     * corexColorBySSA obj, corexFile
         Helper function combining corexSAUpdateB and colorByB in a nice way
         Amides not reported by corex are colored white
@@ -259,10 +257,6 @@ def corexColorBySSA(obj, corexFile):
     cmd.disable("missingSA")
 cmd.extend("corexColorBySSA",corexColorBySSA)
 
-
-def colorByB(obj):
-    cmd.spectrum("b", 'rainbow', "( %s )" % obj)
-cmd.extend("color_by_b",colorByB)
 
 
 def corexHDXRateUpdateB(obj, infoFile, exchangeRateFile):

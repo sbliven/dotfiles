@@ -3,6 +3,8 @@
     email = sbliven@ucsd.edu
 [push]
     default = upstream
+[merge]
+    defaultToUpstream
 [alias]
     stat = status
     st = status
@@ -63,3 +65,4 @@
 
 [core]
 	excludesfile = ~/.cvsignore
+

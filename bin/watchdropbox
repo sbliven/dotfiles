@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+# vim: set filetype=sh
+#
+# usage: watchdropbox [src dst]
+#
+# Checks directory <src> and copies changes (if any) to <dst> directory.
+# If the copy was successful, (eg the results match), deletes the original
+# file upon its next run.
+#
+# This behavior is useful for keeping a dropbox empty. In the case where files
+# are still syncing, the copy will result in a truncated version, so the
+# original will not be deleted. Thus, the next run can fix the mistake.
+# (Note the above doesn't really apply if hard links are used for copying, but
+# is important for direct copying)
+#
+# This script is intended to be run as a cron job. Every 15 minutes works well:
+# */15 * * * * /path/to/watchdropbox /.../Dropbox/folder /.../local/folder
+#
+
+# Associative arrays require bash 4
+[ -n "$BASH_VERSION" ] && [[ BASH_VERSINFO -ge 4 ]] || {
+    echo "You need bash version 4.0 or newer to run this script." >&2
+    exit 1
+}
+
+SRC="${1:-/Users/blivens/Dropbox/fromPJK}"
+DST="${2:-/Users/blivens/Movies/fromPJK}"
+
+# Explicit paths, since cron doesn't set up a complete PATH
+CP="/bin/cp"
+RM="/bin/rm"
+SLEEP=/bin/sleep
+# Optional growl installation
+GN=/usr/local/bin/growlnotify
+LN=/bin/ln
+
+#ignore files smaller than this (probably loading)
+MIN_SIZE=1000
+#ignore files that have been modified more recently than this (seconds)
+MIN_TIME=60
+
+# List of files to ignore. Stored as an associative array
+declare -A EXCLUDE_FILES
+EXCLUDE_FILES=(["Icon"]=  ["Spencer Movie List.txt"]= )
+
+function notify() {
+    if [ -x $GN ]; then
+        $GN --sticky --name "$0" --identifier "$0" \
+            --message "New Videos copied from Dropbox${1+: }${1}" \
+            --priority "Normal" --title "$(basename "$0")"
+    fi
+}
+
+# criteria for detecting syncing as finished
+
+function finishedcopying() {
+    local src="$1"
+    local dst="$2"
+
+    # both exist
+    if [[ ! -e "$src" || ! -e "$dst" ]]
+    then
+        return 1
+    fi
+
+    if [[ "$src" -ef "$dst" ]]
+    then
+        # hard-linked files
+        (( $(date +%s) - $(stat -f%m "$src") > $MIN_TIME )) # hasn't changed recently
+        return $?
+    else
+        #full copies
+        (( $(date +%s) - $(stat -f%m "$src") > $MIN_TIME )) && # hasn't changed recently
+        (( $(stat -f%z "$src") == $(stat -f%z "$dst") )) && #same size
+        (( $(stat -f%z "$dst") > $MIN_SIZE ))
+        return $?
+    fi
+}
+
+#echo "Excluded:"
+#for file in "${!EXCLUDE_FILES[@]}"; do echo "  $file"; done
+
+cd "$SRC" || exit 1
+
+for file in *; do
+    if [ ! -z "${EXCLUDE_FILES["$file"]+x}" ]; then
+        #echo "Ignoring $file"
+        continue
+    fi
+
+    #TODO handle dirs
+    if [[ -d "$file" ]]; then
+        echo "Error: Recursion into directories not implemented by $0" >&2
+
+    # Copy the file, if needed
+    elif [[ -f "$file" && $(stat -f%z "$file") -gt $MIN_SIZE ]]; then
+        # 1st run: copy the file
+        # 2nd run: remove file if it hasn't changed in $MIN_TIME
+        if [[ -e "$DST/$file" ]]; then
+            if finishedcopying "$file" "$DST/$file" 
+            then
+                notify "$file"
+                echo "Deleting $file"
+                $RM "$file"
+            else
+                echo "Waiting for $file"
+            fi
+        else
+            echo Copying "$file"
+            # Use hard links when possible, or full copy if this errors.
+            #$LN "$file" "$DST/$file"
+            $CP "$file" "$DST/$file" &
+        fi
+    else
+        echo "Ignoring $file"
+    fi
+done
+

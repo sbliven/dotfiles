@@ -42,3 +42,4 @@ for file in glob.glob(bin+"*.py"):
             print "ERROR while importing %s"%file
             traceback.print_exc()
 
+if verbose: print "Done"
