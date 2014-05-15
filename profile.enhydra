@@ -35,6 +35,33 @@ export CDPATH
 #
 export PS1_COLOR="35"
 
+# Without parameters, connects to afs
+# Also takes a single parameter, which cd's to common afs directories
+function afs {
+    local user=bliven_s
+    # log in to afs
+    if ! tokens | grep -q 'afs@psi.ch'; then
+        klog "$user"
+    fi
+
+    # jump to known aliases
+    case "$1" in
+        "bioinfo2" | "bioinf2" | "bi2")
+            cd /afs/psi.ch/project/bioinfo2
+            ;;
+        "bioinfo" | "bioinf" | "bi")
+            cd /afs/psi.ch/project/bioinfo
+            ;;
+        "")
+            # no $1
+            ;;
+        *)
+            echo "Unrecognized alias \"$1\"" >&2
+            return 1
+    esac
+    return 0
+}
+
 # Maybe start screen?
 if [[ ! $STY && -x `which screen 2>/dev/null` && ! "ENABLE" ]] ; then
     screen -xRR
