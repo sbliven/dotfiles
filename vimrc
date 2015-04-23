@@ -119,3 +119,6 @@ let g:ctags_title=1
 " Custom foldcommand
 "set foldmethod=expr foldexpr=CountDepth(v:lnum)
 so ~/.vim/misc/CountDepth.vim
+
+" Enable spellchecking
+" setlocal spell spelllang=en_us
