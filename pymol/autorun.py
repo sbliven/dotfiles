@@ -20,7 +20,7 @@ AUTHOR
 
     This script is released to the public domain.
 """
-import os, sys, cmd, glob
+import os, sys, glob
 import inspect
 import traceback
 

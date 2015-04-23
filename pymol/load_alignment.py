@@ -122,7 +122,7 @@ EXAMPLES
         except:
             object1="%s_%04d"%(object,1)
             object2="%s_%04d"%(object,2)
-            print "Warning: '%s' not found in '%s'. Using names %s and %s."%(delimiter,object1,object2)
+            print "Warning: '%s' not found in '%s'. Using names %s and %s."%(delimiter,object,object1,object2)
 
     #split them
     cmd.split_states(object,prefix=prefix)
