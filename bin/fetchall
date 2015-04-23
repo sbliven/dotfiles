@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Runs `git fetch --all` in all the directories listed at the end of the file
+
+while read repo; do {
+    #trigger expansion
+    repo=$(eval "echo $repo")
+    #echo "$repo"; continue
+
+    if [ -d "$repo" ]; then
+        cd "$repo"
+        pwd
+        git fetch --all 2>&1|grep -v 'X11 forwarding request failed on channel'
+    else
+        echo "Not a directory: $repo" >&2
+    fi
+}; done <<FILELIST
+~/dev/bourne/biojava_ws/biojava
+~/dev/bourne/biojava_ws/symmetry
+~/dev/bourne/biojava_ws/symmetry-tools
+~/dev/bourne/biojava_ws/symmetry-benchmark
+FILELIST
+#~/dev/capitani/PDBwide_latex
