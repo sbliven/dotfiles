@@ -25,11 +25,15 @@ AUTHOR
     # disulfides
     cmd.show("sticks","( %s ) and (cys/ca+cb+sg) and byres (cys/sg and bound_to cys/sg)"%sele)
     # ligands
-    cmd.show("sticks","( %s ) and hetatm and not solvent and not hydrogen"%sele)
+    cmd.show("sticks","( %s ) and hetatm and not solvent and not hydrogen and not resn MSE"%sele)
     # metals
-    cmd.show("spheres","( %s ) and not elem c+n+o+h+s"%sele)
+    cmd.show("spheres","( %s ) and not elem c+n+o+h+s and not resn MSE"%sele)
     # color carbon by chain & others by element
     util.cbc(sele)
     util.cnc(sele)
+
+#TODO look into 'organic' and 'metals' keywords for ligands
+#select ligand, organic & !(bymol polymer)
+#select ptm, organic & (bymol polymer)
 
 cmd.extend("pretty_protein",pretty_protein)
