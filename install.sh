@@ -80,6 +80,7 @@ gitconfig	.gitconfig
 MacOSX	.MacOSX
 synergy.conf	.synergy.conf
 cvsignore	.cvsignore
+git-completion.bash	.git-completion.bash
 END
 
 #select the proper local profile
