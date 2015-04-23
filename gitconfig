@@ -1,69 +1,72 @@
+# vi:noet
 [user]
-    name = Spencer Bliven
-    email = sbliven@ucsd.edu
+	name = Spencer Bliven
+	email = sbliven@ucsd.edu
+	signingkey = 780796DF
 [credential]
-    helper = osxkeychain
+	helper = osxkeychain
 [push]
-    default = upstream
+	default = upstream
 [merge]
-    defaultToUpstream
+	defaultToUpstream
 [alias]
-    stat = status
-    st = status
-    ci = commit
-    co = checkout
-    rb = rebase
-    b = branch
-    s = status
-    # Show branches and merges
-    tree = !gitk --all --simplify-by-decoration
+	stat = status
+	st = status
+	ci = commit
+	co = checkout
+	rb = rebase
+	b = branch
+	s = status
+	# Show branches and merges
+	tree = !gitk --all --simplify-by-decoration
 
-    # A few from https://git.wiki.kernel.org/index.php/Aliases
+	# A few from https://git.wiki.kernel.org/index.php/Aliases
 
-    # Resolve conflict with gitk
-    resolve = !gitk --left-right HEAD...MERGE_HEAD
-    # View recently fetched commits
-    lc = log ORIG_HEAD.. --stat --no-merges
-    # see what new commits have been created by the last command (eg "git pull")
-    new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
-    # Serve current repo as a daemon
-    serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+	# Resolve conflict with gitk
+	resolve = !gitk --left-right HEAD...MERGE_HEAD
+	# View recently fetched commits
+	lc = log ORIG_HEAD.. --stat --no-merges
+	# see what new commits have been created by the last command (eg "git pull")
+	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+	# Serve current repo as a daemon
+	serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
 
-    whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+	whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 
 
-    #alias = "!sh -c '[ $# = 2 ] && git config --global alias.\"$1\" \"$2\" && exit 0 || echo \"usage: git alias <new alias> <original command>\" >&2 && exit 1' -"
-    #aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
-    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	#alias = "!sh -c '[ $# = 2 ] && git config --global alias.\"$1\" \"$2\" && exit 0 || echo \"usage: git alias <new alias> <original command>\" >&2 && exit 1' -"
+	#aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 
-    # May be useful for diffing whole trees
-    empty-tree-sha1 = hash-object -t tree /dev/null
+	# May be useful for diffing whole trees
+	empty-tree-sha1 = hash-object -t tree /dev/null
 
-    # find all whitespace errors
-    ws = diff --check 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+	# find all whitespace errors
+	ws = diff --check 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 
-    # And some more from http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
-    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
-    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
-    lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+	# And some more from http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+	lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
 
-    filelog = log -u
-    fl = log -u
+	filelog = log -u
+	fl = log -u
 
-    find = "!git ls-files | grep -i"
+	find = "!git ls-files | grep -i"
 
-    sl = stash list
-    sa = stash apply
-    ss = stash save
+	sl = stash list
+	sa = stash apply
+	ss = stash save
 
-    r = reset
-    r1 = reset HEAD^
-    r2 = reset HEAD^^
-    rh = reset --hard
-    rh1 = reset HEAD^ --hard
-    rh2 = reset HEAD^^ --hard
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	rh = reset --hard
+	rh1 = reset HEAD^ --hard
+	rh2 = reset HEAD^^ --hard
 	subbranch = "!for d in *; do ( cd $d; echo $d; git b; ) ; done"
+	wdiff = diff --color-words
 
 [core]
 	excludesfile = ~/.cvsignore
@@ -72,3 +75,4 @@
 [difftool]
 	prompt = false
 
+	trustExitCode = true
