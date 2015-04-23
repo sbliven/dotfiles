@@ -3,7 +3,7 @@
 # 
 # usage: synergyc_secure [synergyc options] server
 
-SERVER="${1:-enhydra}"
+SERVER="${1:-enhydra.psi.ch}"
 shift
 LPORT=24800
 RPORT=24800
@@ -12,9 +12,10 @@ LOG=/var/log/system.log
 LOG=/dev/null
 LOG=/var/log/synergyc.log
 {
-    ssh -x -f -L $LPORT:localhost:$RPORT -o ExitOnForwardFailure=yes "$SERVER" 'sleep 10' &&
-    synergyc --no-restart -f "$@" localhost:$LPORT >>"$LOG" 2>&1 &
+    ssh -x -f -L "localhost:$LPORT:$SERVER:$RPORT" -o ExitOnForwardFailure=yes "$SERVER" 'sleep 30' &&
+    synergyc -f "$@" localhost:$LPORT >>"$LOG" 2>&1 &
 
+    #echo "waiting for: ssh -x -f -L $LPORT:localhost:$RPORT -o ExitOnForwardFailure=yes "$SERVER" 'sleep 30' && synergyc --no-restart -f "$@" localhost:$LPORT >>"$LOG" 2>&1 &"
     wait
     if [[ -e $(which growlnotify) ]]; then
         growlnotify -s  -n "$0" -d "$0" -m "Connection lost" -p "Very Low" -t "$(basename "$0")"
@@ -24,4 +25,4 @@ LOG=/var/log/synergyc.log
 } &
 
 
-
+#wait
