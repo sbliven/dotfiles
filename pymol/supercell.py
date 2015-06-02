@@ -10,22 +10,22 @@ from math import cos, sin, radians, sqrt
 import numpy
  
 def cellbasis(angles, edges):
-    '''
-    For the unit cell with given angles and edge lengths calculate the basis
-    transformation (vectors) as a 4x4 numpy.array
-    '''
-    rad = [radians(i) for i in angles]
-    basis = numpy.identity(4)
-    basis[0][1] = cos(rad[2])
-    basis[1][1] = sin(rad[2])
-    basis[0][2] = cos(rad[1])
-    basis[1][2] = (cos(rad[0]) - basis[0][1]*basis[0][2])/basis[1][1]
-    basis[2][2] = sqrt(1 - basis[0][2]**2 - basis[1][2]**2)
-    edges.append(1.0)
-    return basis * edges # numpy.array multiplication!
+	'''
+	For the unit cell with given angles and edge lengths calculate the basis
+	transformation (vectors) as columns of a 4x4 numpy.array
+	'''
+	rad = [radians(i) for i in angles]
+	basis = numpy.identity(4)
+	basis[0][1] = cos(rad[2])
+	basis[1][1] = sin(rad[2])
+	basis[0][2] = cos(rad[1])
+	basis[1][2] = (cos(rad[0]) - basis[0][1]*basis[0][2])/basis[1][1]
+	basis[2][2] = sqrt(1 - basis[0][2]**2 - basis[1][2]**2)
+	edges.append(1.0)
+	return basis * edges # numpy.array multiplication!
  
-def supercell(a=1, b=1, c=1, object=None, color='blue', name='supercell', withmates=1, prefix="m"):
-    '''
+def supercell(a=1, b=1, c=1, object=None, color='blue', name='supercell', withmates=1,prefix="m",transformation=None):
+	'''
 DESCRIPTION
  
     Draw a supercell, as requested by Nicolas Bock on the pymol-users
@@ -49,66 +49,100 @@ ARGUMENTS
  
     withmates = bool: also create symmetry mates in displayed cells
     {default: 1}
-    
-    prefix = string: prefix for new symmetry mate objects
- 
+
+    prefix = string: prefix for the symmetry mates {default: m}
+
+    transformation = list: a 16-element list giving the 4x4 transformation
+    matrix, as described in get_object_matrix() {default: identity matrix}
+
 SEE ALSO
  
     show cell
  
-    '''
-    if object is None:
-        object = cmd.get_object_list()[0]
-    withmates = int(withmates)
+    cmd
+	'''
+	if object is None:
+		object = cmd.get_object_list()[0]
+	withmates = int(withmates)
+
+	sym = cmd.get_symmetry(object)
+	cell_edges = sym[0:3]
+	cell_angles = sym[3:6]
  
-    sym = cmd.get_symmetry(object)
-    cell_edges = sym[0:3]
-    cell_angles = sym[3:6]
+	basis = cellbasis(cell_angles, cell_edges)
+
+	if transformation is not None:
+		transmat = transformation_to_numpy(transformation)
+		#transmat = numpy.array("0.0 1.0 0 0;-1 0 0 0;0 0 1 0; 0 0 0 1")
+		#print "First basis (%s): %s" % (basis.shape,basis)
+		#print "Transform (%s): %s" % (transmat.shape,transmat)
+		#print "Second basis1: %s" % numpy.dot(transmat,basis)
+		#basis = numpy.dot(transmat, basis) #apply transformation after the basis
+		#print "Second basis2 (%s): %s" % (basis.shape,basis)
+		#print transmat * numpy.matrix("1;2;3;0")
+		#print basis[0:3,0:3]
+		#print type(basis)
+	assert isinstance(basis, numpy.ndarray)
+
+	ts = list()
+	for i in range(int(a)):
+		for j in range(int(b)):
+			for k in range(int(c)):
+				ts.append([i,j,k])
  
-    basis = cellbasis(cell_angles, cell_edges)
-    assert isinstance(basis, numpy.ndarray)
+	obj = [
+		cgo.BEGIN,
+		cgo.LINES,
+		cgo.COLOR,
+	]
+	obj.extend(cmd.get_color_tuple(color))
  
-    ts = list()
-    for i in range(int(a)):
-        for j in range(int(b)):
-            for k in range(int(c)):
-                ts.append([i,j,k])
+	#print "ts=%s"%ts
+	for t in ts:
+		# draw bounding box around cell t
+		#print( "Rotating (%s) %s * %s (%s)" % (basis[0:3,0:3].shape, basis[0:3,0:3],t,len(t) ) )
+		shift = basis[0:3,0:3] * t
+		shift = shift[:,0] + shift[:,1] + shift[:,2]
  
-    obj = [
-        cgo.BEGIN,
-        cgo.LINES,
-        cgo.COLOR,
-    ]
-    obj.extend(cmd.get_color_tuple(color))
+		for i in range(3):
+			# vi is direction of the edges to draw
+			vi = basis[0:3,i]
+			# vj are starting points for the four edges in that direction
+			vj = [
+				numpy.array([0.,0.,0.]),
+				basis[0:3,(i+1)%3],
+				basis[0:3,(i+2)%3],
+				basis[0:3,(i+1)%3] + basis[0:3,(i+2)%3]
+			]
+			for j in range(4):
+				start = shift + vj[j]
+				end = start + vi
+
+				#print "start=%s"%(start)
+				#print "type(start)=%s"%(type(start))
+
+				if transformation is not None:
+					start = numpy.dot(transmat, numpy.append(start,1))[:3]
+					end   = numpy.dot(transmat, numpy.append(end  ,1))[:3]
+
+				#print "tstart=%s"%(start)
+				#print "type(tstart)=%s"%(type(start))
+
+				obj.append(cgo.VERTEX)
+				obj.extend(start.tolist())
+				obj.append(cgo.VERTEX)
+				obj.extend(end.tolist())
  
-    for t in ts:
-        shift = basis[0:3,0:3] * t
-        shift = shift[:,0] + shift[:,1] + shift[:,2]
+		if withmates:
+			symexpcell('%s%d%d%d_' % tuple([prefix]+list(t)), object, *t,transformation=transformation)
  
-        for i in range(3):
-            vi = basis[0:3,i]
-            vj = [
-                numpy.array([0.,0.,0.]),
-                basis[0:3,(i+1)%3],
-                basis[0:3,(i+2)%3],
-                basis[0:3,(i+1)%3] + basis[0:3,(i+2)%3]
-            ]
-            for j in range(4):
-                obj.append(cgo.VERTEX)
-                obj.extend((shift + vj[j]).tolist())
-                obj.append(cgo.VERTEX)
-                obj.extend((shift + vj[j] + vi).tolist())
+	obj.append(cgo.END)
  
-        if withmates:
-            symexpcell(prefix+'%d%d%d_' % tuple(t), object, *t)
+	cmd.delete(name)
+	cmd.load_cgo(obj, name)
  
-    obj.append(cgo.END)
- 
-    cmd.delete(name)
-    cmd.load_cgo(obj, name)
- 
-def symexpcell(prefix='mate', object=None, a=0, b=0, c=0):
-    '''
+def symexpcell(prefix='mate', object=None, a=0, b=0, c=0,transformation=None):
+	'''
 DESCRIPTION
  
     Creates all symmetry-related objects for the specified object that
@@ -126,48 +160,70 @@ ARGUMENTS
  
     a, b, c = integer: create neighboring cell {default: 0,0,0}
  
+    transformation = list: list of 16 floats giving the transformation matrix
+    to apply to the generated symmetry mates {default: identity matrix}
+
 SEE ALSO
  
     symexp, http://www.pymolwiki.org/index.php/SuperSym
-    '''
-    if object is None:
-        object = cmd.get_object_list()[0]
+	'''
+	if object is None:
+		object = cmd.get_object_list()[0]
  
-    sym = cmd.get_symmetry(object)
-    cell_edges = sym[0:3]
-    cell_angles = sym[3:6]
-    spacegroup = sym[6]
+	sym = cmd.get_symmetry(object)
+	cell_edges = sym[0:3]
+	cell_angles = sym[3:6]
+	spacegroup = sym[6]
  
-    basis = cellbasis(cell_angles, cell_edges)
-    basis = numpy.matrix(basis)
+	basis = cellbasis(cell_angles, cell_edges)
+	basis = numpy.matrix(basis)
+
+	extent = cmd.get_extent(object)
+	center = sum(numpy.array(extent)) * 0.5
+	center = numpy.matrix(center.tolist() + [1.0]).T
+	center_cell = basis.I * center
  
-    extent = cmd.get_extent(object)
-    center = sum(numpy.array(extent)) * 0.5
-    center = numpy.matrix(center.tolist() + [1.0]).T
-    center_cell = basis.I * center
+	extra_shift = [[float(i)] for i in (a,b,c)]
  
-    extra_shift = [[float(i)] for i in (a,b,c)]
+	i = 0
+	matrices = xray.sg_sym_to_mat_list(spacegroup)
+	for mat in matrices:
+		i += 1
  
-    i = 0
-    matrices = xray.sg_sym_to_mat_list(spacegroup)
-    for mat in matrices:
-        i += 1
+		mat = numpy.matrix(mat)
+		shift = numpy.floor(mat * center_cell)
+		mat[0:3,3] -= shift[0:3,0]
+		mat[0:3,3] += extra_shift
  
-        mat = numpy.matrix(mat)
-        shift = numpy.floor(mat * center_cell)
-        mat[0:3,3] -= shift[0:3,0]
-        mat[0:3,3] += extra_shift
+		mat = basis * mat * basis.I
+		mat_list = list(mat.flat)
  
-        mat = basis * mat * basis.I
-        mat_list = list(mat.flat)
- 
-        name = '%s%d' % (prefix, i)
-        cmd.create(name, object)
-        cmd.transform_object(name, mat_list)
-        cmd.color(i+1, name)
+		name = '%s%d' % (prefix, i)
+		cmd.create(name, object)
+		cmd.transform_object(name, mat_list)
+		if transformation is not None:
+			#print "Transforming %s by %s"%(name,transformation)
+			cmd.transform_object(name, transformation)
+		cmd.color(i+1, name)
  
 cmd.extend('symexpcell', symexpcell)
 cmd.extend('supercell', supercell)
  
+def transformation_to_numpy(transformation):
+	if len(transformation) != 16:
+		print "Invalid transformation. Expect 16-element transformation matrix, found %d."%len(transformation)
+		print type(transformation)
+		print transformation
+		return None
+
+	mat = numpy.array(transformation).reshape(4,4)
+	#print( "Transforming %s to %s"%(transformation,mat))
+	return mat
+
+def numpy_to_transformation(mat):
+	return mat.reshape(-1).tolist()
+
+
 # tab-completion of arguments
 cmd.auto_arg[3]['supercell'] = [ cmd.object_sc, 'object', '']
+
