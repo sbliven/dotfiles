@@ -34,6 +34,44 @@ def selectAlignment(alignFile, name1=None, name2=None):
 
 cmd.extend( "selectAlignment", selectAlignment )
 
+def selectAlignmentBlocks(alignFile, name1=None, name2=None):
+    """usage: selectAlignment, [name1, [name2]]
+    
+    Defines two new selections based on the alignment given in alignFile.
+    AlignFile is in the XML format used by CE and BioJava.
+
+    If specified, the selections will be called name1 and name2. Otherwise the
+    names will be taken from the alignment file.
+    
+    return the names of the two selections (sele_name1, sele_name2)
+    """
+    align = Alignment(alignFile)
+
+    if name1 is None:
+        name1 = align.name1[:4]
+    if name2 is None:
+        name2 = align.name2[:4]
+
+    blocks1 = align.getSelect1ByBlock()
+    blocks2 = align.getSelect2ByBlock()
+    selections = []
+    for blk in xrange(len(blocks1)):
+        select1 = "%s and ( %s )" % (name1, blocks1[blk])
+        select2 = "%s and ( %s )" % (name2, blocks2[blk])
+
+        align1="sele_%s_%s"%(name1,blk)
+        align2="sele_%s_%s"%(name2,blk)
+        selections.append(align1)
+        selections.append(align2)
+
+        cmd.select(align1,select1)
+        cmd.select(align2,select2)
+    cmd.deselect()
+
+    return selections
+
+cmd.extend( "selectAlignmentBlocks", selectAlignmentBlocks )
+
 
 def displayAlignment(alignFile, name1, name2):
     """usage: displayAlignment alignFile.xml, name1, name2

@@ -132,6 +132,8 @@ def listBoxes(op, n, numBoxes, maxnum=9, maxRepeats=None):
         return listBoxesAdd(n, numBoxes, maxnum, maxRepeats)
     elif op=="*":
         return listBoxesMult(n, numBoxes, maxnum, maxRepeats)
+    elif op=="x":
+        return listBoxesMult(n, numBoxes, maxnum, maxRepeats)
     else:
         raise InputError(op,"Unsupported operation")
         
