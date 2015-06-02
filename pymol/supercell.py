@@ -73,15 +73,6 @@ SEE ALSO
 
 	if transformation is not None:
 		transmat = transformation_to_numpy(transformation)
-		#transmat = numpy.array("0.0 1.0 0 0;-1 0 0 0;0 0 1 0; 0 0 0 1")
-		#print "First basis (%s): %s" % (basis.shape,basis)
-		#print "Transform (%s): %s" % (transmat.shape,transmat)
-		#print "Second basis1: %s" % numpy.dot(transmat,basis)
-		#basis = numpy.dot(transmat, basis) #apply transformation after the basis
-		#print "Second basis2 (%s): %s" % (basis.shape,basis)
-		#print transmat * numpy.matrix("1;2;3;0")
-		#print basis[0:3,0:3]
-		#print type(basis)
 	assert isinstance(basis, numpy.ndarray)
 
 	ts = list()
@@ -97,10 +88,8 @@ SEE ALSO
 	]
 	obj.extend(cmd.get_color_tuple(color))
  
-	#print "ts=%s"%ts
 	for t in ts:
 		# draw bounding box around cell t
-		#print( "Rotating (%s) %s * %s (%s)" % (basis[0:3,0:3].shape, basis[0:3,0:3],t,len(t) ) )
 		shift = basis[0:3,0:3] * t
 		shift = shift[:,0] + shift[:,1] + shift[:,2]
  
@@ -118,15 +107,9 @@ SEE ALSO
 				start = shift + vj[j]
 				end = start + vi
 
-				#print "start=%s"%(start)
-				#print "type(start)=%s"%(type(start))
-
 				if transformation is not None:
 					start = numpy.dot(transmat, numpy.append(start,1))[:3]
 					end   = numpy.dot(transmat, numpy.append(end  ,1))[:3]
-
-				#print "tstart=%s"%(start)
-				#print "type(tstart)=%s"%(type(start))
 
 				obj.append(cgo.VERTEX)
 				obj.extend(start.tolist())
@@ -202,7 +185,6 @@ SEE ALSO
 		cmd.create(name, object)
 		cmd.transform_object(name, mat_list)
 		if transformation is not None:
-			#print "Transforming %s by %s"%(name,transformation)
 			cmd.transform_object(name, transformation)
 		cmd.color(i+1, name)
  
@@ -217,7 +199,6 @@ def transformation_to_numpy(transformation):
 		return None
 
 	mat = numpy.array(transformation).reshape(4,4)
-	#print( "Transforming %s to %s"%(transformation,mat))
 	return mat
 
 def numpy_to_transformation(mat):
