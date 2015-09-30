@@ -14,7 +14,8 @@ class PutCenterCallback(object):
 
     def __call__(self):
         if self.name not in cmd.get_names('objects'):
-            cmd.delete(self.cb_name)
+            import threading
+            threading.Thread(None, cmd.delete, args=(self.cb_name,)).start()
             return
 
         v = cmd.get_view()
@@ -47,6 +48,7 @@ DESCRIPTION
     '''
     from pymol import cgo
 
+    auto_zoom = cmd.get('auto_zoom')
     cmd.set('auto_zoom', 0)
 
     w = 0.06 # cylinder width
@@ -64,4 +66,5 @@ DESCRIPTION
     PutCenterCallback(name, 1).load()
     cmd.load_cgo(obj, name)
 
+    cmd.set('auto_zoom',auto_zoom)
 cmd.extend('axes', axes)
