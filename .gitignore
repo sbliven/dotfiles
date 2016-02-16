@@ -1,3 +1,8 @@
 *.pyc
 vim/.netrwhist
 solarized
+
+# should be symlinks
+pymol/fetch_eppic.py
+pymol/findseq.py
+pymol/flatten_obj.py
