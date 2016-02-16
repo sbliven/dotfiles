@@ -24,7 +24,7 @@ def cellbasis(angles, edges):
 	edges.append(1.0)
 	return basis * edges # numpy.array multiplication!
 
-def supercell(a=1, b=1, c=1, object=None, color='blue', name='supercell', withmates=1,prefix="m",center=0,transformation=None):
+def supercell(a=1, b=1, c=1, object=None, color='blue', name='supercell', withmates=1,prefix="m",center=0,transformation=None,cutoff=None):
 	'''
 DESCRIPTION
 
@@ -58,6 +58,8 @@ ARGUMENTS
     transformation = list: a 16-element list giving the 4x4 transformation
     matrix, as described in get_object_matrix() {default: identity matrix}
 
+    cutoff = int: restrict symmetry mates to within cutoff angstroms of the origin.
+    Use 0 to generate all symmetry mates. {default: 0}
 SEE ALSO
 
     show cell
@@ -133,14 +135,14 @@ SEE ALSO
 				obj.extend(end.tolist())
 
 		if withmates:
-			symexpcell('%s%d%d%d_' % (prefix,t[0]-astart,t[1]-bstart,t[2]-cstart), object, *t,transformation=transformation)
+			symexpcell('%s%d%d%d_' % (prefix,t[0]-astart,t[1]-bstart,t[2]-cstart), object, *t,transformation=transformation,cutoff=cutoff)
 
 	obj.append(cgo.END)
 
 	cmd.delete(name)
 	cmd.load_cgo(obj, name)
 
-def symexpcell(prefix='mate', object=None, a=0, b=0, c=0,transformation=None):
+def symexpcell(prefix='mate', object=None, a=0, b=0, c=0,transformation=None,cutoff=None):
 	'''
 DESCRIPTION
 
@@ -162,12 +164,18 @@ ARGUMENTS
     transformation = list: list of 16 floats giving the transformation matrix
     to apply to the generated symmetry mates {default: identity matrix}
 
+    cutoff = int: restrict symmetry mates to within cutoff angstroms of the origin.
+    Use 0 to generate all symmetry mates. {default: 0}
 SEE ALSO
 
     symexp, http://www.pymolwiki.org/index.php/SuperSym
 	'''
+	#print "symexpcell %s,%s,%d,%d,%d,%s"%(prefix,object,int(a),int(b),int(c),transformation)
 	if object is None:
 		object = cmd.get_object_list()[0]
+	if cutoff is not None:
+		cutoff = int(cutoff)
+		if cutoff <= 0: cutoff = None
 
 	sym = cmd.get_symmetry(object)
 	cell_edges = sym[0:3]
@@ -175,27 +183,43 @@ SEE ALSO
 	spacegroup = sym[6]
 
 	basis = cellbasis(cell_angles, cell_edges)
-	basis = numpy.matrix(basis)
 
 	extent = cmd.get_extent(object)
 	center = sum(numpy.array(extent)) * 0.5
-	center = numpy.matrix(center.tolist() + [1.0]).T
-	center_cell = basis.I * center
+	center = numpy.append(center,1.0).reshape(4,1)
+	center_cell = numpy.linalg.inv(basis) * center
 
-	extra_shift = [[float(i)] for i in (a,b,c)]
+	extra_shift = numpy.array([[float(i)] for i in (a,b,c)])
+
+	origin = numpy.array([[0,0,0,1]]).T
+	if transformation is not None:
+		transmat = transformation_to_numpy(transformation)
+		#print "%s\n*\n%s\n=\n%s\n" % (origin,transmat,
+		#		numpy.dot(numpy.linalg.inv(transmat),origin) )
+		origin = numpy.dot(numpy.linalg.inv(transmat),origin)
 
 	i = 0
 	matrices = xray.sg_sym_to_mat_list(spacegroup)
 	for mat in matrices:
 		i += 1
 
-		mat = numpy.matrix(mat)
-		shift = numpy.floor(mat * center_cell)
+		mat = numpy.array(mat)
+		shift = numpy.floor(numpy.dot(mat, center_cell))
 		mat[0:3,3] -= shift[0:3,0]
-		mat[0:3,3] += extra_shift
+		mat[0:3,3] += extra_shift[0:3,0]
 
-		mat = basis * mat * basis.I
+		mat = numpy.dot(numpy.dot(basis, mat), numpy.linalg.inv(basis) )
 		mat_list = list(mat.flat)
+
+		new_center = numpy.dot(mat,center)
+		#print "%s\n* (%d)\n%s\n=\n%s\n" % (center,i,mat, new_center)
+
+		if cutoff is not None:
+			dist = new_center - origin
+			dist = numpy.dot(dist.T,dist)
+			if dist > cutoff**2:
+				#print "Skipping %d%d%d_%d at distance %f" % (a,b,c,i,sqrt(dist))
+				continue
 
 		name = '%s%d' % (prefix, i)
 		cmd.create(name, object)
@@ -211,8 +235,6 @@ cmd.extend('supercell', supercell)
 def transformation_to_numpy(transformation):
 	if len(transformation) != 16:
 		print "Invalid transformation. Expect 16-element transformation matrix, found %d."%len(transformation)
-		print type(transformation)
-		print transformation
 		return None
 
 	mat = numpy.array(transformation).reshape(4,4)
