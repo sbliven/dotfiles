@@ -1,0 +1,40 @@
+#!/bin/bash
+field1=1
+field2=4
+
+while (($# > 0)); do
+    case "$1" in
+        -h)
+            echo "usage: getrangespairs [-k1 n] [-k2 n] [file...]"
+            exit 2
+            ;;
+        -k1)
+            field1=$2
+            shift 2
+            ;;
+        -k2)
+            field2=$2
+            shift 2
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+awk "\$0 ~ /^[^#]/ && beg1 != \"\" {
+    if(\$$field1 == end1+1 && \$$field2 == end2+1) {
+            end1 = \$$field1; end2 = \$$field2;
+        } else {
+            printf(\"%s-%s\t%s-%s\n\",beg1,end1,beg2,end2);
+            beg1=\$$field1; end1=\$$field1; beg2=\$$field2;end2=\$$field2;
+        }
+    };
+    \$0 ~ /^[^#]/ && beg1 == \"\" {
+        beg1=\$$field1; end1=\$$field1; beg2=\$$field2;end2=\$$field2;
+    };
+    END {
+        printf(\"%s-%s\t%s-%s\n\",beg1,end1,beg2,end2);
+    }" "$@"
+
+
