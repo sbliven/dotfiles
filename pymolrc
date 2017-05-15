@@ -5,6 +5,8 @@ _ feedback disable,all,everything
 import sys
 import os
 
+# Workaround for pop bug
+_ feedback enable, cmd parser, warnings errors results
 _ feedback pop
 
 #read in pymol bin
@@ -304,6 +306,12 @@ set cartoon_ring_mode, 3 # show rings with thick border
 set cartoon_ring_finder, 4 # both ribose and nucleotide rings
 set cartoon_nucleic_acid_mode, 1 #C3' backbone
 
+# dotted lines in gaps
+set cartoon_gap_cutoff, 20
+
+# Keep atom order
+set retain_order,1
+
 #set cartoon_side_chain_helper
 #rebuild
 
@@ -323,10 +331,13 @@ set cartoon_nucleic_acid_mode, 1 #C3' backbone
 #set cartoon_dumbbell_width, 0.4
 #set cartoon_dumbbell_radius, 0.4
 
-#bg_color white
+bg_color white
+set opaque_background, 0
 #hide everything, *
 #show cartoon, *
 
 set antialias_shader, 2
 
+# Workaround for pop bug
+_ feedback enable, cmd parser, warnings errors results
 _ feedback pop
