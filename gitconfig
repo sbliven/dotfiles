@@ -1,12 +1,12 @@
 # vi:noet
 [user]
 	name = Spencer Bliven
-	email = sbliven@ucsd.edu
+	email = spencer.bliven@gmail.com
 	signingkey = 780796DF
 [credential]
 	helper = osxkeychain
 [push]
-	default = upstream
+	default = current
 [merge]
 	defaultToUpstream
 [alias]
@@ -70,10 +70,13 @@
 
 [core]
 	excludesfile = /Users/blivens/.cvsignore
+	autocrlf = input
 [diff]
 	tool = opendiff
 [difftool]
 	prompt = false
+[github]
+	user = sbliven
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
