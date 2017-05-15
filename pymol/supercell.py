@@ -71,6 +71,10 @@ SEE ALSO
 	withmates = int(withmates)
 
 	sym = cmd.get_symmetry(object)
+	if sym is None:
+		print("No symmetry operators found")
+		return
+
 	cell_edges = sym[0:3]
 	cell_angles = sym[3:6]
 
