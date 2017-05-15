@@ -1,3 +1,6 @@
 *.swo
 *.swp
 .DS_Store
+.env
+.konchrc
+*.pyc
