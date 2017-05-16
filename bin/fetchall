@@ -8,7 +8,9 @@ while read repo; do {
 
     if [ -d "$repo" ]; then
         cd "$repo"
+        echo -ne "\e[35m" #magenta
         pwd
+        echo -ne "\e[39m" #default
         git fetch --all 2>&1|grep -v 'X11 forwarding request failed on channel'
     else
         echo "Not a directory: $repo" >&2
@@ -16,7 +18,8 @@ while read repo; do {
 }; done <<FILELIST
 ~/dev/bourne/biojava_ws/biojava
 ~/dev/bourne/biojava_ws/symmetry
-~/dev/bourne/biojava_ws/symmetry-tools
-~/dev/bourne/biojava_ws/symmetry-benchmark
+~/dev/bourne/biojava_ws/eppic
 FILELIST
 #~/dev/capitani/PDBwide_latex
+#~/dev/bourne/biojava_ws/symmetry-tools-old
+#~/dev/bourne/biojava_ws/symmetry-benchmark-old

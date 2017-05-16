@@ -49,13 +49,7 @@ if [[ "$-" =~ i ]]; then
     echo interactive
 fi
 
-if [[ -x "$(which autojump 2>/dev/null)" ]]; then
-    if [ -e /usr/share/autojump/autojump.bash ]; then
-        source /usr/share/autojump/autojump.bash
-    elif [ -e /opt/local/etc/profile.d/autojump.sh ]; then
-        source /opt/local/etc/profile.d/autojump.sh
-    elif [ -e /opt/local/etc/profile.d/autojump.bash ]; then
-        source /opt/local/etc/profile.d/autojump.bash
-    fi
-fi
 
+#node version manager
+export NVM_DIR="/Users/blivens/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
