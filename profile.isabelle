@@ -3,7 +3,6 @@
 #
 # This contains settings specifice to the configuration of my MacBook Pro (Isabelle.local).
 
-/opt/local/bin/fortune
 
 # SET UP PATHS
 # Lower entries are searched first
@@ -49,6 +48,12 @@ if [ -d /opt ]; then
             port select --list python
     }
 fi
+#homebrew anaconda
+if [ -d /usr/local/anaconda3/bin ]; then
+    #add last so that the normal versions come first
+    export PATH="$PATH:/usr/local/anaconda3/bin"
+fi
+
 #Custom installs
 PATH="/usr/local/sbin:$PATH"
 MANPATH="/usr/local/man/:$MANPATH"
@@ -95,47 +100,48 @@ if [ -x /opt/local/share/java/gradle ]; then
     export GRADLE_HOME=/opt/local/share/java/gradle
 fi
 
-#python virtualenv
-if [ -x /opt/local/bin/virtualenvwrapper_lazy.sh-3.6 ]; then
-    VIRTUALENVWRAPPER_SCRIPT=virtualenvwrapper.sh-3.6
-    . /opt/local/bin/virtualenvwrapper_lazy.sh-3.6
-    export PIP_REQUIRE_VIRTUALENV=true
-fi
-#autoenv
-if [ -x $(which activate.sh) ]; then
-    # changes `cd`
-    . $(which activate.sh)
-fi
-#autojump
-# also changes cd
-if [[ -x "$(which autojump 2>/dev/null)" ]]; then
-    if [ -e /usr/share/autojump/autojump.bash ]; then
-        source /usr/share/autojump/autojump.bash
-    elif [ -e /opt/local/etc/profile.d/autojump.sh ]; then
-        source /opt/local/etc/profile.d/autojump.sh
-    elif [ -e /opt/local/etc/profile.d/autojump.bash ]; then
-        source /opt/local/etc/profile.d/autojump.bash
-    fi
-fi
-if [ -x $(which activate.sh) ]; then
-    # re-add autoenv `cd` hook
-    autoenv_init
-fi
-#Ruby environment manager
-# also changes cd
-if [ -d $HOME/.rvm/bin ]; then
-    #PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-    source ~/.rvm/scripts/rvm
-fi
-if [ -x $(which activate.sh) ]; then
-    # re-add autoenv `cd` hook
-    autoenv_init
-fi
+##python virtualenv
+#if [ -x /opt/local/bin/virtualenvwrapper_lazy.sh-3.6 ]; then
+#    VIRTUALENVWRAPPER_SCRIPT=virtualenvwrapper.sh-3.6
+#    . /opt/local/bin/virtualenvwrapper_lazy.sh-3.6
+#    export PIP_REQUIRE_VIRTUALENV=true
+#fi
+##autoenv
+#if [ -x "$(which activate.sh)" ]; then
+#    # changes `cd`
+#    . $(which activate.sh)
+#fi
+#if [ -x "/usr/local/opt/autoenv/activate.sh" ]; then
+#    . /usr/local/opt/autoenv/activate.sh
+#fi
+#
+##autojump
+## also changes cd
+#if [[ -x "$(which autojump 2>/dev/null)" ]]; then
+#    if [ -e /usr/share/autojump/autojump.bash ]; then
+#        source /usr/share/autojump/autojump.bash
+#    elif [ -f /usr/local/etc/profile.d/autojump.sh ]; then
+#        source /usr/local/etc/profile.d/autojump.sh
+#    elif [ -e /opt/local/etc/profile.d/autojump.sh ]; then
+#        source /opt/local/etc/profile.d/autojump.sh
+#    elif [ -e /opt/local/etc/profile.d/autojump.bash ]; then
+#        source /opt/local/etc/profile.d/autojump.bash
+#    fi
+#    echo "No autojump.bash found" >&2
+#fi
+#if [ -x $(which activate.sh) ]; then
+#    # re-add autoenv `cd` hook
+#    autoenv_init
+#fi
 
 # Android
 if [ -d $HOME/Library/Android/sdk/platform-tools ]; then
     PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
 fi
+
+#node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # home directory
 PATH="$HOME/bin:$PATH"
@@ -144,6 +150,26 @@ MANPATH="$HOME/home:$MANPATH"
 # current directory
 PATH=".:$PATH:./bin"
 MANPATH="$MANPATH:./man"
+
+## Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+if [[ -d "$HOME/.rvm" ]]; then
+    export PATH="$PATH:$HOME/.rvm/bin"
+
+    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+fi
+#Ruby environment manager
+# also changes cd
+#if [ -d $HOME/.rvm/bin ]; then
+#    #PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+#    source ~/.rvm/scripts/rvm
+#    [[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion
+##    if [ -x $(which activate.sh) ]; then
+##        # re-add autoenv `cd` hook
+##        autoenv_init
+##    fi
+##    rvm use 2.4.2
+#fi
+#
 export PATH MANPATH
 export PYTHONPATH
 
@@ -151,11 +177,18 @@ export PDB_DIR="$HOME/pdb"
 export PDB_CACHE_DIR="$PDB_DIR"
 
 # Export the proper java version
-if [ ! -d "$JAVA_HOME" ]; then
+if [[ ! -d "$JAVA_HOME" && -x /usr/libexec/java_home ]]; then
     export JAVA_HOME=$(/usr/libexec/java_home)
 fi
 
-alias deepsleep='"/Users/blivens/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
+# print fun message
+if [ -e `which fortune` ]; then
+    fortune
+fi
+
+if [ -e "$HOME/Library/Widgets/Deep Sleep.wdgt/deepsleep" ]; then
+    alias deepsleep='"$HOME/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
+fi
 
 alias sethostname='sudo scutil --set HostName isabelle.local'
 
@@ -260,8 +293,9 @@ alias balrog='ssh -L 8081:pc11467.psi.ch:8081 balrog'
 #}
 
 #cdargs
-. /opt/local/etc/profile.d/cdargs-bash.sh
-
+if [ -e /opt/local/etc/profile.d/cdargs-bash.sh ]; then
+    . /opt/local/etc/profile.d/cdargs-bash.sh
+fi
 
 # Maybe start screen?
 if [[ ! $STY && -x `which screen` && ! "ENABLE" ]] ; then
@@ -421,3 +455,13 @@ fi
 alias dsflush='dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 
 test -f ~/.git-completion.bash && . $_
+
+alias workon='source activate'
+
+# vim: filetype=sh
+alias gemini='/Applications/MacPaw Gemini.app/Contents/MacOS/MacPaw Gemini'
+
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+if [ -e /Users/bliven_s/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/bliven_s/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

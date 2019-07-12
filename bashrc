@@ -49,7 +49,3 @@ if [[ "$-" =~ i ]]; then
     echo interactive
 fi
 
-
-#node version manager
-export NVM_DIR="/Users/blivens/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
