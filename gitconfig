@@ -9,6 +9,7 @@
 	default = current
 [merge]
 	defaultToUpstream
+	tool = opendiff
 [alias]
 	stat = status
 	st = status
@@ -69,10 +70,14 @@
 	wdiff = diff --color-words
 
 [core]
-	excludesfile = /Users/blivens/.cvsignore
+	excludesfile = /Users/bliven_s/.cvsignore
 	autocrlf = input
+	attributesFile = ~/.gitattributes
 [diff]
 	tool = opendiff
+[diff "gz"]
+	textconv = gzcat
+	binary = true
 [difftool]
 	prompt = false
 [github]
