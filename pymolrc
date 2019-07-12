@@ -338,6 +338,9 @@ set opaque_background, 0
 
 set antialias_shader, 2
 
+# Fetch PDB1 by default
+set assembly, 1
+
 # Workaround for pop bug
 _ feedback enable, cmd parser, warnings errors results
 _ feedback pop
