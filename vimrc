@@ -1,11 +1,62 @@
-" Include plugins from .vim/bundle/
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-execute pathogen#infect()
+" Install vim-plug plugin manager
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" Colorscheme
+" Load plugins
+" Run :PlugInstall after modifying
+call plug#begin('~/.vim/plugged')
+" Sensible defaults
+Plug 'tpope/vim-sensible'
+
+" Colorschemes
+Plug 'altercation/vim-colors-solarized'
+
+" Auto-detect tab spacing
+Plug 'tpope/vim-sleuth'
+
+" statusline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Languages
+Plug 'tpope/vim-rails',          { 'for': 'ruby'       }
+Plug 'pangloss/vim-javascript',  { 'for': 'javascript' }
+Plug 'plasticboy/vim-markdown',  { 'for': 'markdown'   }
+Plug 'davidhalter/jedi-vim',     { 'for': 'python'     }
+
+" Programming
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+Plug 'gregsexton/gitv'
+if v:version >= 703
+  Plug 'airblade/vim-gitgutter'
+else
+  Plug 'mhinz/vim-signify'
+endif
+if v:version >= 703
+  Plug 'Yggdroot/indentLine'
+endif
+
+" Editing
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'junegunn/vim-emoji'
+
+call plug#end()
+
+" -------------------------------------------------------------------------
+
+
+
+
+"" Colorscheme
 syntax enable
 "set background=light "defaults to autodetect
 let g:solarized_visibility="normal" " low|normal|high
+let g:airline_theme='solarized'
 colorscheme solarized
 
 "locallize all the .un~ files
@@ -20,10 +71,6 @@ set smartindent "indent intelligently around { and such
 inoremap # X#
 "set cindent "c-style smart indent
 "set indentexpr= "custom indent expression
-set tabstop=4
-set shiftwidth=4
-set smarttab "use shiftwidth for tab distance, not tabstop
-set expandtab "insert spaces instead of real tabs.
 set modeline "settings for vi: at the beginning of files. Ex vi:noet:ts=4:sw=4
 
 set foldmethod=syntax "Automatically detect code folds
@@ -49,8 +96,6 @@ set hlsearch
 :map ]] j0[[%/{<CR>
 :map [] k$][%?}<CR>
 
-set backspace=indent,eol,start
-set ruler
 "wrap between words
 set linebreak
 "hardwrap
@@ -65,9 +110,6 @@ set listchars=tab:›\ ,trail:˙
 
 map <F1> <Esc>
 imap <F1> <Esc>
-
-" man pages
-runtime ftplugin/man.vim
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -122,3 +164,57 @@ so ~/.vim/misc/CountDepth.vim
 
 " Enable spellchecking
 " setlocal spell spelllang=en_us
+
+
+" ----------------------------------------------------------------------
+" Plugin configuration
+" ----------------------------------------------------------------------
+
+
+" TableMode shortcuts
+if &runtimepath =~ 'vim-table-mode'
+  " Use || for TableModeEnable and __ for TableModeDisable
+  function! s:isAtStartOfLine(mapping)
+    let text_before_cursor = getline('.')[0 : col('.')-1]
+    let mapping_pattern = '\V' . escape(a:mapping, '\')
+    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
+    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
+  endfunction
+
+  inoreabbrev <expr> <bar><bar>
+            \ <SID>isAtStartOfLine('\|\|') ?
+            \ '<c-o>:TableModeEnable<cr><bar><space><bar><left><left>' : '<bar><bar>'
+  inoreabbrev <expr> __
+            \ <SID>isAtStartOfLine('__') ?
+            \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+endif
+
+
+" IndentLine
+"let g:indentLine_color_term = 239
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Emoji 🐶 🐱
+"if &runtimepath =~ 'vim-emoji' && &runtimepath =~ 'vim-gitgutter'
+if emoji#available()
+  let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
+  let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
+  let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
+  let g:gitgutter_sign_modified_removed = emoji#for('collision')
+  set completefunc=emoji#complete
+endif
+
+
+""" PLUGIN-SPECIFIC OPTIONS
+" Options to run after plugins are loaded
+" These are "supposed to be" set in after/plugin directory, but then
+" cross-platform synchronization would get even messier. So, au VimEnter it is. 
+" https://superuser.com/a/931316/55943
+function! SetPluginOptionsNow()
+
+  " Delayed code
+
+endfunction
+
+au VimEnter * call SetPluginOptionsNow()
+""" END OF PLUGIN-SPECIFIC OPTIONS
