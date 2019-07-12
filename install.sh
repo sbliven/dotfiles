@@ -79,6 +79,8 @@ pymol	.pymol
 gitconfig	.gitconfig
 synergy.conf	.synergy.conf
 cvsignore	.cvsignore
+git-completion.bash	.git-completion.bash
+zshrc	.zshrc
 END
 
 #select the proper local profile
