@@ -81,6 +81,7 @@ MacOSX	.MacOSX
 synergy.conf	.synergy.conf
 cvsignore	.cvsignore
 git-completion.bash	.git-completion.bash
+zshrc	.zshrc
 END
 
 #select the proper local profile
