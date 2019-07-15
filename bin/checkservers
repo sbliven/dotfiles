@@ -3,24 +3,26 @@
 #
 # Usage: checkservers [host ...]
 #
-# Pings each server in the list and creates a growl alert if there is no response
+# Checks each server in the list using ping and/or http.
+# Failures are reported at the command line and with growl or MacOS
+# notifications if available.
 #
 # Returns:
 #  0 if all servers are up
 #  1 if any server is down
 #  2 if google.com is down, probably indicating a network outage
 
-
-HOSTS="${1:-pisaster.ucsd.edu enhydra.ucsd.edu topicpages.ploscompbiol.org code.open-bio.org}"
+DEFAULT_HOSTS=(bliven.us cloud.bliven.us)
+HOSTS="${1:-${DEFAULT_HOSTS[@]}}"
 
 # An always-up website. If it's down, assume a bad network connection and abort
 REFERENCE="google.com"
 
 TIMEOUT=2
 
-GN=/usr/local/bin/growlnotify
-PING=/sbin/ping
-WGET=/opt/local/bin/wget
+GN=$(which growlnotify 2>/dev/null || echo /usr/local/bin/growlnotify)
+PING=$(which ping 2>/dev/null || echo /sbin/ping)
+WGET=$(which wget 2>/dev/null || echo /opt/local/bin/wget)
 
 
 #echo "HOSTS: $HOSTS"
@@ -35,6 +37,20 @@ function log() {
 
     if (( $priority <= $loglevel )); then
         echo "$@"
+    fi
+}
+
+# Usage: notify title message
+# Notify user with message
+function notify() {
+    title="${1}"
+    message="${2}"
+    if [[ -x "$GN" ]]; then
+        # try growl
+        $GN -s -n "$0" -d "${title}" -m "${message}" -p "Very Low" -t "$(basename "$0")"
+    elif [[ -x $(which osascript 2>/dev/null) ]]; then
+        # MacOS notification
+        osascript -e "display notification \"${message}\" with title \"${title}\""
     fi
 }
 
@@ -85,7 +101,7 @@ for host in $HOSTS; do
     if ! checkhost "$host" 2>&1
     then
         log 2 "OFFLINE  $host"
-        $GN -s -n "$0" -d "$0 $host" -m "Unable to contact $host" -p "Very Low" -t "$(basename "$0")"
+        notify "$0 $host" "Unable to contact $host"
         rtn=1
     fi
 done
