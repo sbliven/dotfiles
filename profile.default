@@ -5,37 +5,13 @@
 
 # SET UP PATHS
 # Lower entries are searched first
-# Fink
-test -r /sw/bin/init.sh && /sw/bin/init.sh
-# MacPorts
-if [ -d /opt ]; then
-    PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-    MANPATH="/opt/local/share/man:$MANPATH"
-fi
+
 # home directory
-PATH="~/bin:$PATH"
-MANPATH="~/home:$MANPATH"
+[[ -d ~/bin ]] && PATH="~/bin:$PATH"
+[[ -d ~/man ]] && MANPATH="~/man:$MANPATH"
+
 # current directory
 PATH=".:bin:$PATH"
 MANPATH="man:$MANPATH"
 export PATH MANPATH
 
-#CDPATH
-CDPATH="~:$CDPATH"
-export CDPATH
-
-
-# Prompt Color
-# 31    Red     Default
-# 32    Green   Local Machines
-# 33    Yellow
-# 34    Blue    CSE Machines
-# 35    Magenta Work Machines
-# 36    Cyan    Work Servers
-#
-#export PS1_COLOR="31"
-
-# Maybe start screen?
-if [[ ! $STY && -x `which screen 2>/dev/null` && ! "ENABLE" ]] ; then
-    screen -xRR
-fi

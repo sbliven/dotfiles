@@ -85,6 +85,7 @@ synergy.conf	.synergy.conf
 cvsignore	.cvsignore
 git-completion.bash	.git-completion.bash
 zshrc	.zshrc
+bin	bin
 END
 
 #select the proper local profile

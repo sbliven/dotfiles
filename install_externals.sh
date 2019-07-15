@@ -28,7 +28,7 @@ download () {
     dst="${1}"
     url="${2}"
 
-    Echo "downloading $url"
+    echo "downloading $url"
     curl -o "$dst" "$url" || { echo "Error installing $dst"; return 1; }
 }
 
