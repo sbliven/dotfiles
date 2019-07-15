@@ -85,5 +85,5 @@ zshrc	.zshrc
 END
 
 #select the proper local profile
-echo 'Remember to customize or re-link .profile.local for this machine.'
+echo 'Remember to customize or re-link .profile.local for this machine (and .gitconfig.local).'
 

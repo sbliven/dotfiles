@@ -3,13 +3,10 @@
 	name = Spencer Bliven
 	email = spencer.bliven@gmail.com
 	signingkey = 780796DF
-[credential]
-	helper = osxkeychain
 [push]
-	default = current
+	default = simple
 [merge]
 	defaultToUpstream
-	tool = opendiff
 [alias]
 	stat = status
 	st = status
@@ -44,7 +41,7 @@
 	empty-tree-sha1 = hash-object -t tree /dev/null
 
 	# find all whitespace errors
-	ws = diff --check 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+	ws = diff --check
 
 	# And some more from http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -70,11 +67,9 @@
 	wdiff = diff --color-words
 
 [core]
-	excludesfile = /Users/bliven_s/.cvsignore
+	excludesfile = ~/.cvsignore
 	autocrlf = input
 	attributesFile = ~/.gitattributes
-[diff]
-	tool = opendiff
 [diff "gz"]
 	textconv = gzcat
 	binary = true
@@ -82,10 +77,6 @@
 	prompt = false
 [github]
 	user = sbliven
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-
+[include]
+	# Include machine-specific changes if any
+	path = .gitconfig.local
