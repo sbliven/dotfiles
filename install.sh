@@ -35,6 +35,9 @@ fi
     cd $CONFIG && git submodule update --init --rebase --recursive
 )
 
+# Install externals
+$CONFIG/install_externals.sh "$CONFIG"
+
 # Function to safely symlink two files
 # If the destintion is already a file, move it out of the way or throw an error
 safeLink() {
@@ -77,6 +80,7 @@ hgrc	.hgrc
 pymolrc	.pymolrc
 pymol	.pymol
 gitconfig	.gitconfig
+MacOSX	.MacOSX
 synergy.conf	.synergy.conf
 cvsignore	.cvsignore
 git-completion.bash	.git-completion.bash
@@ -84,5 +88,5 @@ zshrc	.zshrc
 END
 
 #select the proper local profile
-echo 'Remember to customize or re-link .profile.local for this machine.'
+echo 'Remember to customize or re-link .profile.local for this machine (and .gitconfig.local).'
 

@@ -3,7 +3,6 @@
 #
 # This contains settings specifice to the configuration of my MacBook Pro (Isabelle.local).
 
-/opt/local/bin/fortune
 
 # SET UP PATHS
 # Lower entries are searched first
@@ -12,7 +11,7 @@ test -r /sw/bin/init.sh && /sw/bin/init.sh
 # MacPorts
 if [ -d /opt ]; then
     PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-    MANPATH="/opt/local/share/man:$MANPATH"
+    MANPATH="/opt/share/man:/opt/local/share/man:$MANPATH"
     
 #    pyVersion=$(python -c "import sys; print sys.version[:3]")
 #    pyDir="/opt/local/Library/Frameworks/Python.framework/Versions/$pyVersion"
@@ -43,10 +42,18 @@ if [ -d /opt ]; then
 #    fi
     function python_select {
         sudo port select --set python python$1 &&
-            sudo port select --set ipython ipython$1 ||
+            sudo port select --set pip pip$1 &&
+            sudo port select --set virtualenv virtualenv$1 &&
+            sudo port select --set ipython py$1-ipython ||
             port select --list python
     }
 fi
+#homebrew anaconda
+if [ -d /usr/local/anaconda3/bin ]; then
+    #add last so that the normal versions come first
+    export PATH="$PATH:/usr/local/anaconda3/bin"
+fi
+
 #Custom installs
 PATH="/usr/local/sbin:$PATH"
 MANPATH="/usr/local/man/:$MANPATH"
@@ -61,7 +68,7 @@ MANPATH="/usr/local/mysql/man:$MANPATH"
 PATH="/opt/local/lib/gromacs/bin:$PATH"
 export GMXLIB="/opt/local/share/gromacs/top"
 # VMD
-VMD_DIR="$(echo "/Applications/_science/VMD/VMD "*".app/Contents/vmd")"
+VMD_DIR="$(shopt -u failglob; echo "/Applications/_science/VMD/VMD "*".app/Contents/vmd")"
 if [[ -e "$VMD_DIR" ]]; then
     PATH="$VMD_DIR:$PATH"
     alias vmd="\"$VMD_DIR/vmd_MACOSXX86\""
@@ -71,7 +78,7 @@ if [[ -e "$VMD_DIR" ]]; then
 fi
 #unset VMD_DIR
 #PyMOL
-PYTHONPATH="/opt/local/lib/pymol/modules:$PYTHONPATH"
+#PYTHONPATH="/opt/local/lib/pymol/modules:$PYTHONPATH"
 #CINT
 CINTSYSDIR=/usr/local/
 export CINTSYSDIR
@@ -84,18 +91,104 @@ if [ -d /usr/local/UbiGraph ]; then
     PYTHONPATH="/usr/local/UbiGraph/examples/Python:$PYTHONPATH"
 fi
 
+# Heroku Toolbelt
+[ -d /usr/local/heroku ] &&
+    PATH="/usr/local/heroku/bin:$PATH"
+
+#Gradle
+if [ -x /opt/local/share/java/gradle ]; then
+    export GRADLE_HOME=/opt/local/share/java/gradle
+fi
+
+##python virtualenv
+#if [ -x /opt/local/bin/virtualenvwrapper_lazy.sh-3.6 ]; then
+#    VIRTUALENVWRAPPER_SCRIPT=virtualenvwrapper.sh-3.6
+#    . /opt/local/bin/virtualenvwrapper_lazy.sh-3.6
+#    export PIP_REQUIRE_VIRTUALENV=true
+#fi
+##autoenv
+#if [ -x "$(which activate.sh)" ]; then
+#    # changes `cd`
+#    . $(which activate.sh)
+#fi
+#if [ -x "/usr/local/opt/autoenv/activate.sh" ]; then
+#    . /usr/local/opt/autoenv/activate.sh
+#fi
+#
+##autojump
+## also changes cd
+#if [[ -x "$(which autojump 2>/dev/null)" ]]; then
+#    if [ -e /usr/share/autojump/autojump.bash ]; then
+#        source /usr/share/autojump/autojump.bash
+#    elif [ -f /usr/local/etc/profile.d/autojump.sh ]; then
+#        source /usr/local/etc/profile.d/autojump.sh
+#    elif [ -e /opt/local/etc/profile.d/autojump.sh ]; then
+#        source /opt/local/etc/profile.d/autojump.sh
+#    elif [ -e /opt/local/etc/profile.d/autojump.bash ]; then
+#        source /opt/local/etc/profile.d/autojump.bash
+#    fi
+#    echo "No autojump.bash found" >&2
+#fi
+#if [ -x $(which activate.sh) ]; then
+#    # re-add autoenv `cd` hook
+#    autoenv_init
+#fi
+
+# Android
+if [ -d $HOME/Library/Android/sdk/platform-tools ]; then
+    PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
+fi
+
+#node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # home directory
 PATH="$HOME/bin:$PATH"
-PYTHONPATH="$HOME/bin:$PYTHONPATH"
+#PYTHONPATH="$HOME/bin:$PYTHONPATH"
 MANPATH="$HOME/home:$MANPATH"
 # current directory
 PATH=".:$PATH:./bin"
 MANPATH="$MANPATH:./man"
+
+## Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+if [[ -d "$HOME/.rvm" ]]; then
+    export PATH="$PATH:$HOME/.rvm/bin"
+
+    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+fi
+#Ruby environment manager
+# also changes cd
+#if [ -d $HOME/.rvm/bin ]; then
+#    #PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+#    source ~/.rvm/scripts/rvm
+#    [[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion
+##    if [ -x $(which activate.sh) ]; then
+##        # re-add autoenv `cd` hook
+##        autoenv_init
+##    fi
+##    rvm use 2.4.2
+#fi
+#
 export PATH MANPATH
 export PYTHONPATH
 
-alias deepsleep='"/Users/blivens/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
+export PDB_DIR="$HOME/pdb"
+export PDB_CACHE_DIR="$PDB_DIR"
+
+# Export the proper java version
+if [[ ! -d "$JAVA_HOME" && -x /usr/libexec/java_home ]]; then
+    export JAVA_HOME=$(/usr/libexec/java_home)
+fi
+
+# print fun message
+if [ -e `which fortune` ]; then
+    fortune
+fi
+
+if [ -e "$HOME/Library/Widgets/Deep Sleep.wdgt/deepsleep" ]; then
+    alias deepsleep='"$HOME/Library/Widgets/Deep Sleep.wdgt/deepsleep"'
+fi
 
 alias sethostname='sudo scutil --set HostName isabelle.local'
 
@@ -133,6 +226,10 @@ function mp_nice {
 #alias svn1.4-diff='svn1.4 diff --diff-cmd fmdiff'
 #alias svn1.6-diff='svn1.6 diff --diff-cmd fmdiff'
 alias svn-diff='svn diff --diff-cmd fmdiff'
+
+#alias nih='/opt/bin/ssh -I /Library/OpenSC/lib/opensc-pkcs11.so -Y -L 3128:webproxy.ncbi.nlm.nih.gov:3128 -L 3389:mslogin02.ncbi.nlm.nih.gov:3389 blivense@ssh.ncbi.nlm.nih.gov'
+alias nih='/opt/bin/ssh -Y -L 3128:webproxy.ncbi.nlm.nih.gov:3128 -L 3389:mslogin02.ncbi.nlm.nih.gov:3389 blivense@ssh2.be-md.ncbi.nlm.nih.gov'
+alias nihwin='rdesktop -f -d NCBI_NT -u blivense localhost'
 
 #function svn {
 #    read -p "SVN version 1.[4]:" version
@@ -182,6 +279,13 @@ alias disableRemoteDisk='defaults write com.apple.NetworkBrowser EnableODiskBrow
 
 
 alias mcbackup='/Users/blivens/Library/Application\ Support/minecraft/mcbackup.sh'
+
+alias Xpra='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra'
+alias Xpra_pi='/Applications/_dev/Xpra.app/Contents/MacOS/Xpra attach --encoding=png ssh:pi@192.168.2.17'
+
+alias psiwin='rdesktop -f -d psich -u bliven_s winterm1.psi.ch'
+alias balrog='ssh -L 8081:pc11467.psi.ch:8081 balrog'
+
 # Workaround for gvim warnings
 #function gvim {
 #    { $(which gvim) "$@"; } 3>&2 2>&1 1>&3 |
@@ -189,8 +293,9 @@ alias mcbackup='/Users/blivens/Library/Application\ Support/minecraft/mcbackup.s
 #}
 
 #cdargs
-. /opt/local/etc/profile.d/cdargs-bash.sh
-
+if [ -e /opt/local/etc/profile.d/cdargs-bash.sh ]; then
+    . /opt/local/etc/profile.d/cdargs-bash.sh
+fi
 
 # Maybe start screen?
 if [[ ! $STY && -x `which screen` && ! "ENABLE" ]] ; then
@@ -264,8 +369,11 @@ function sanitizeBibliography {
         echo "$probLines"
         return
     fi
-    egrep -iv '^[ \t]*(url|uri|local-url|doi|pmid|rating|note|annote) *=' "$bibFile" |
-        sed -E 's/^([ \t]*title[ \t]*=[ \t]*)(\{.*\})([ \t]*,[ \t]*)$/\1"\2"\3/' \
+    cat "$bibFile" |
+        #egrep -iv '^[ \t]*(url|uri|local-url|doi|pmid|rating|note|annote) *=' |
+        egrep -iv '^[ \t]*(local-url|rating|note|annote) *=' |
+        sed -E 's/^([ \t]*title[ \t]*=[ \t]*)(\{.*\})([ \t]*,[ \t]*)$/\1"\2"\3/' |
+        sed -E 's/^@webpage/@online/' \
         > "$tmpFile"
     mv "$tmpFile" "$bibFile"
 }
@@ -333,3 +441,27 @@ function nh {
     done
 }
 
+# Less with gzip, tar, etc
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[ -x /opt/local/bin/lesspipe.sh ] && eval "$(SHELL=/bin/sh lesspipe.sh)"
+
+# less syntax highlighting
+if [ -x "$(which highlight)" ]; then
+    #export LESSOPEN="| /opt/local/bin/src-hilite-lesspipe.sh %s"
+    export LESSOPEN="| $(which highlight) %s --out-format xterm256 --quiet --force --style solarized-light"
+    export LESS=" -R"
+fi
+
+alias dsflush='dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+test -f ~/.git-completion.bash && . $_
+
+alias workon='source activate'
+
+# vim: filetype=sh
+alias gemini='/Applications/MacPaw Gemini.app/Contents/MacOS/MacPaw Gemini'
+
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+if [ -e /Users/bliven_s/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/bliven_s/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

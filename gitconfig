@@ -1,12 +1,10 @@
 # vi:noet
 [user]
 	name = Spencer Bliven
-	email = sbliven@ucsd.edu
+	email = spencer.bliven@gmail.com
 	signingkey = 780796DF
-[credential]
-	helper = osxkeychain
 [push]
-	default = upstream
+	default = simple
 [merge]
 	defaultToUpstream
 [alias]
@@ -43,7 +41,7 @@
 	empty-tree-sha1 = hash-object -t tree /dev/null
 
 	# find all whitespace errors
-	ws = diff --check 4b825dc642cb6eb9a060e54bf8d69288fbee4904
+	ws = diff --check
 
 	# And some more from http://durdn.com/blog/2012/11/22/must-have-git-aliases-advanced-examples/
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -70,5 +68,15 @@
 
 [core]
 	excludesfile = ~/.cvsignore
-
-	trustExitCode = true
+	autocrlf = input
+	attributesFile = ~/.gitattributes
+[diff "gz"]
+	textconv = gzcat
+	binary = true
+[difftool]
+	prompt = false
+[github]
+	user = sbliven
+[include]
+	# Include machine-specific changes if any
+	path = .gitconfig.local
