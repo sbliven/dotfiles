@@ -35,6 +35,9 @@ fi
     cd $CONFIG && git submodule update --init --rebase --recursive
 )
 
+# Install externals
+$CONFIG/install_externals.sh "$CONFIG"
+
 # Function to safely symlink two files
 # If the destintion is already a file, move it out of the way or throw an error
 safeLink() {
