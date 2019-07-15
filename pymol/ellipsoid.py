@@ -1,1 +1,0 @@
-/Users/blivens/dev/principal_axes/ellipsoid.py
