@@ -40,10 +40,12 @@ endif
 if v:version >= 703
   Plug 'Yggdroot/indentLine'
 endif
+Plug 'vim-syntastic/syntastic'  " Syntax checking
 
 " Editing
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'junegunn/vim-emoji'
+Plug 'terryma/vim-multiple-cursors'
 
 call plug#end()
 
