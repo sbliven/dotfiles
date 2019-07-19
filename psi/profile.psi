@@ -1,0 +1,112 @@
+# ~/.profile.local
+# Created by Spencer Bliven
+#
+# This is customized for PSI environments
+
+# home directory
+PATH="~/bin:$PATH"
+MANPATH="~/man:$MANPATH"
+
+# current directory
+PATH=".:bin:$PATH"
+MANPATH="man:$MANPATH"
+export PATH MANPATH
+
+# Prompt Color
+# 31    Red     Default
+# 32    Green   Local Machines
+# 33    Yellow
+# 34    Blue    CSE Machines
+# 35    Magenta Work Machines
+# 36    Cyan    Work Servers
+#
+export PS1_COLOR="36"
+
+# Somehow merlin has the wrong locale set by default
+export LANG=en_US.UTF-8
+export LC_ALL=$LANG
+export LC_CTYPE=$LANG
+
+alias cryosparcm_bliven=/data/user/bliven_s/cryosparc/cryosparc2_master/bin/cryosparcm
+
+# autojump
+[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] &&
+    source $HOME/.autojump/etc/profile.d/autojump.sh
+
+# functions for managing gpfs
+function gpfsq {
+    if [[ "${#}" -lt 1 ]]; then
+        /usr/lpp/mmfs/bin/mmlsquota -C merlin.psi.ch --block-size auto merlin5
+    else
+        sudo /usr/lpp/mmfs/bin/mmlsquota -C merlin.psi.ch --block-size auto "${@}" merlin5
+    fi
+}
+function gpfs_lbr {
+    groups=()
+    #for ((i=1;i<9;i++)); do
+        #groups+=("unx-lbr_p00$i")
+    #done
+    #groups+=("unx-emf_p001")
+    groups+=($(ls -l /data/project/bio/|awk '$4 ~ /unx-bio/ {print $4}'))
+    groups+=("$@")
+    for group in "${groups[@]}"; do
+        sudo /usr/lpp/mmfs/bin/mmlsquota -C merlin.psi.ch --block-size auto -g "$group" merlin5 |
+            awk '$2 == "group" {printf("%s\t%s\t%s\t%s\t%s\t%s\t%s\n", "'"$group"'", $4, $5, $6, $10, $11, $12)}'
+    done
+}
+
+# afs subshells
+alias afs_screen='screen pagsh -c "/bin/bash --rcfile ~/.dotfiles/psi/bashrc_with_token_renewal"'
+alias afs_adm='pagsh -c "/bin/bash --rcfile ~/.dotfiles/psi/bashrc_adm"'
+alias afs_renew='(krenew -t -K 60 & )'
+
+
+# module shortcuts
+alias modrelion='module use EM; module load gcc/4.9.4 openmpi/2.0.1 cuda/8.0.44 relion/3.0_beta'
+alias modcryolo='module use unstable; module load cuda/9.2.148 psi-python36/5.0.1'
+alias modconda='module use unstable; module load anaconda'
+alias modhpce='module use unstable; module load anaconda; conda activate hpce_tools'
+
+# default modules
+alias moddefault='module load tmux/2.8'
+moddefault
+
+function runrelion {
+    modrelion
+    cd /gpfs/data/bliven_s/relion30_tutorial
+    relion &
+}
+
+
+# Echo version. Exec the output, e.g. exec `update_pmodules`
+update_pmodules () {
+    local new_version=${1:-1.0.0rc5}
+    if [[ ! -d "/opt/psi/Tools/Pmodules/${new_version}" ]]; then
+        echo "Unknown version: ${new_version}" >&2
+        return 1
+    fi
+    echo PMODULES_VERSION=${new_version}';' 
+    echo -n 'PATH="'
+    echo -n "${PATH}" | sed -r 's;(/afs/psi.ch/sys/[^:]*|/opt/psi)/Tools/Pmodules/[^:]*/bin:?;;g'
+    echo -ne '";\nMANPATH="'
+    echo -n "${MANPATH}" | sed -r 's;(/afs/psi.ch/sys/[^:]*|/opt/psi)/Tools/Pmodules/[^:]*/share/man:?;;g'
+    echo '";'
+    echo 'unset PMODULES_ENV;'
+    echo source /opt/psi/config/profile.bash';'
+}
+# function version. Seems not to work reliably.
+update_pmodules_fn () {
+    local new_version=${1:-1.0.0rc5}
+    if [[ ! -d "/opt/psi/Tools/Pmodules/${new_version}" ]]; then
+        echo "Unknown version: ${new_version}" >&2
+        return 1
+    fi
+    PMODULES_VERSION=${new_version} # no need to export again
+    PATH=${PATH//"/afs/psi.ch/sys/"*"/Tools/Pmodules/"*"/bin"}
+    MANPATH=${MANPATH//"/afs/psi.ch/sys/"*"/Tools/Pmodules/"*"/share/man"}
+    source /opt/psi/config/profile.bash
+}
+
+# Work around HPCLOCAL-184
+export GIT_SSH=$HOME/bin/git_ssh
+

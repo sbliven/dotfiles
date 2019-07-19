@@ -1,0 +1,27 @@
+# BASHRC file which renews AFS tokens as long as possible
+#
+# Run long jobs with:
+# screen pagsh -c "/bin/bash --rcfile ~/.bashrc_with_token_renewal" 
+#echo "Running ~/.bashrc_with_token_renew"
+export CUSTOMRC=$$
+
+source ~/.bashrc
+
+KRB5CCNAME_NEW="FILE:$(mktemp /tmp/krb5cc_$(id -u)_XXXXXXXX)"
+#echo "KRB5CCNAME_NEW=${KRB5CCNAME_NEW}"
+if [[ "${KRB5CCNAME:0:5}" == 'FILE:' ]] && klist -f | grep -q "renew until" ; then
+	#echo cp -a "${KRB5CCNAME:5}" "${KRB5CCNAME_NEW:5}"
+	cp -a "${KRB5CCNAME:5}" "${KRB5CCNAME_NEW:5}"
+	KRB5CCNAME="${KRB5CCNAME_NEW}"
+	echo "KRB5CCNAME=$KRB5CCNAME"
+else
+	KRB5CCNAME="${KRB5CCNAME_NEW}"
+	echo "KRB5CCNAME=$KRB5CCNAME"
+	#echo kinit
+	kinit || return
+fi
+echo aklog
+aklog
+echo krenew...
+(krenew -t -K 60 & )
+

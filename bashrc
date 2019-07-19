@@ -14,7 +14,7 @@ shopt -s histappend
 shopt -s hostcomplete
 shopt -s interactive_comments
 shopt -s no_empty_cmd_completion
-shopt -s failglob
+#shopt -s failglob
 # report completed jobs immediately
 set -b
 

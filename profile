@@ -79,6 +79,24 @@ pause () {
     echo
 }
 
+# Update DISPLAY from within a tmux session
+displayRefresh () {
+	export DISPLAY="`tmux show-env|sed -n 's/^DISPLAY=//p'`"
+	echo $DISPLAY
+}
+
+# highlight words
+highlight () { 
+    case "$#" in
+    0)  cat - # don't highlight
+        ;;
+    1)  grep --color -E "$1|$" -h -
+        ;;
+    *)  grep --color -E "$1|$" "${@:1}"
+        ;;
+    esac
+}
+
 
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered

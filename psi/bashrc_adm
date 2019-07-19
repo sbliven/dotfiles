@@ -1,0 +1,14 @@
+# BASHRC file which authenticates as the admin user
+#
+# Run long jobs with:
+# pagsh -c "/bin/bash --rcfile ~/.bashrc_adm" 
+
+source ~/.bashrc
+
+
+ADM="${USER}-adm"
+KRB5CCNAME="FILE:$(mktemp /tmp/krb5cc_$(id $ADM -u)_XXXXXXXX)"
+# Reauthenticate with admin account
+kinit $ADM || return
+aklog
+
