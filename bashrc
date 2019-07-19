@@ -46,7 +46,7 @@ fi
 if [[ "$-" =~ i ]]; then
     #allow chats
     mesg y
-    echo interactive
+    #echo interactive
 fi
 
 # Run host-specific bashrc

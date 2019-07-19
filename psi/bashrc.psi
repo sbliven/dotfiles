@@ -68,7 +68,7 @@ alias modconda='module use unstable; module load anaconda'
 alias modhpce='module use unstable; module load anaconda; conda activate hpce_tools'
 
 # default modules
-alias moddefault='module load tmux/2.8 git/2.8.1'
+alias moddefault='module load tmux/2.8' # git/2.8.1'
 moddefault
 
 function runrelion {
