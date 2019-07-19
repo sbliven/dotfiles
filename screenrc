@@ -1,4 +1,4 @@
-sessionname "Main Screen"
+#sessionname "Main Screen" # Problems for PSI 'interactive' command
 #kill startup message
 startup_message off
 
@@ -94,8 +94,8 @@ bind ^\
 # closes when you exit that program, so if you quit pine
 # window 2 closes.
 
-screen -t bash 1 
-screen -t code 2
+#screen -t bash 1 
+#screen -t code 2
 #screen -t vergil 2 vergil
 
 # Launching
