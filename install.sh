@@ -67,14 +67,16 @@ export -f safeLink
 
 cat <<END | awk " { printf( \"safeLink \\\"$CONFIG/%s\\\" \\\"$ROOT/%s\\\";\", \$1, \$2) | \"/bin/bash\";}" ;
 bashrc	.bashrc
+bash_profile	.bash_profile
 profile	.profile
+profile.default	.profile.local
+bashrc.default	.bashrc.local
 Xdefaults.white	.Xdefaults
 vimrc	.vimrc
 vim	.vim
 xinitrc	.xinitrc
 Xmodmap	.Xmodmap
 screenrc	.screenrc
-profile.default	.profile.local
 gnuplot	.gnuplot
 hgrc	.hgrc
 pymolrc	.pymolrc

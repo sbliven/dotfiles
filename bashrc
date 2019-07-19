@@ -49,3 +49,6 @@ if [[ "$-" =~ i ]]; then
     echo interactive
 fi
 
+# Run host-specific bashrc
+# Running after the generic bashrc allows variables to be clobbered
+source ~/.bashrc.local
