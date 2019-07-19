@@ -5,6 +5,7 @@
 # multiple hosts. Host-specific variables (like PATH) should be set in
 # ~/.profile.local, which is called after this script.
 #echo "`date`  Running .profile" #|tee -a /Users/blivens/startup_scripts.log
+export SB_PROFILE=1
 
 if [ -e `which vim` ]; then
 	export EDITOR=`which vim`
@@ -100,5 +101,5 @@ highlight () {
 
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered
-[ -x ~/.profile.local ] && source ~/.profile.local
+[ -e ~/.profile.local ] && source ~/.profile.local
 

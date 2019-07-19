@@ -1,5 +1,11 @@
 #echo "`date`  Running .bashrc" #|tee -a /Users/blivens/startup_scripts.log
 
+# Ensure profile was run
+if [[ -z "${SB_PROFILE}" && -e ~/.profile ]]; then
+    #echo "bash running profile"
+    source ~/.profile
+fi
+
 # history
 export HISTIGNORE="fg:bg:exit"
 export HISTCONTROL="ignoredups:ignorespace:erasedups"
@@ -51,4 +57,4 @@ fi
 
 # Run host-specific bashrc
 # Running after the generic bashrc allows variables to be clobbered
-source ~/.bashrc.local
+[ -e ~/.bashrc.local ] && source ~/.bashrc.local
