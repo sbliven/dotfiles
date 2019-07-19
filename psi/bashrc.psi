@@ -108,7 +108,7 @@ update_pmodules_fn () {
 }
 
 # Work around HPCLOCAL-184
-export GIT_SSH=$HOME/bin/git_ssh
+export GIT_SSH=$HOME/.dotfiles/psi/bin/git_ssh
 
 #source /afs/psi/project/strucbiol/xsoft/setup/software-setup.sh
 

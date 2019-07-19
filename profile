@@ -100,5 +100,5 @@ highlight () {
 
 # Run host-specific profile
 # Running after the generic profile allows variables to be clobbered
-source ~/.profile.local
+[ -x ~/.profile.local ] && source ~/.profile.local
 
