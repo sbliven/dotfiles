@@ -1,0 +1,5 @@
+[user]
+	email = spencer.bliven@gmail.com
+	signingkey = 780796DF
+[push]
+	default = simple

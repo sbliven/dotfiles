@@ -82,6 +82,7 @@ hgrc	.hgrc
 pymolrc	.pymolrc
 pymol	.pymol
 gitconfig	.gitconfig
+gitconfig.default	.gitconfig.local
 MacOSX	.MacOSX
 synergy.conf	.synergy.conf
 cvsignore	.cvsignore
@@ -91,5 +92,5 @@ bin	bin
 END
 
 #select the proper local profile
-echo 'Remember to customize or re-link .profile.local for this machine (and .gitconfig.local).'
+echo 'Remember to customize or re-link for this machine: .profile.local .bashrc.local .gitconfig.local'
 

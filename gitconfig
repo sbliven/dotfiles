@@ -1,10 +1,15 @@
+# Git configuration
 # vi:noet
+# Machine-specific settings can be set in .gitconfig.local (requires git >= 1.7.10)
 [user]
 	name = Spencer Bliven
 	email = spencer.bliven@gmail.com
 	signingkey = 780796DF
 [push]
-	default = simple
+	# Usually prefer default = simple (git >= 1.7.11)
+	# Keep 'tracking' for old clients and override in .gitconfig.local
+	#default = simple
+	default = tracking
 [merge]
 	defaultToUpstream
 [alias]
@@ -78,5 +83,5 @@
 [github]
 	user = sbliven
 [include]
-	# Include machine-specific changes if any
+	# Include machine-specific changes if any (git >= 1.7.10)
 	path = .gitconfig.local
