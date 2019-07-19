@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Don't use system ssh_config
+ssh -F /dev/null "$@"
