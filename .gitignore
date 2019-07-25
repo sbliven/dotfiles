@@ -14,3 +14,5 @@ pymol/license.lic
 pymol/recent.db
 pymol/ellipsoid.py
 pymol/principal_axes.py
+
+/tmux/plugins/*

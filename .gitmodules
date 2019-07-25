@@ -4,3 +4,9 @@
 [submodule "Pymol-script-repo"]
 	path = Pymol-script-repo
 	url = git@github.com:sbliven/Pymol-script-repo.git
+[submodule "tmux/plugins/tmux-battery"]
+	path = tmux/plugins/tmux-battery
+	url = https://git::@github.com/tmux-plugins/tmux-battery
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://git::@github.com/tmux-plugins/tpm

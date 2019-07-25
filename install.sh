@@ -89,6 +89,8 @@ cvsignore	.cvsignore
 git-completion.bash	.git-completion.bash
 zshrc	.zshrc
 bin	bin
+tmux	.tmux
+tmux/tmux.conf	.tmuxrc
 END
 
 #select the proper local profile
