@@ -112,4 +112,10 @@ export GIT_SSH=$HOME/.dotfiles/psi/bin/git_ssh
 
 #source /afs/psi/project/strucbiol/xsoft/setup/software-setup.sh
 
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
 alias capsswitch='setxkbmap -option ctrl:nocaps'
+
+# Load custom conda in this shell (merlin only)
+[[ -d /data/user/bliven_s/conda ]] && alias conda_hook='eval "$(/data/user/bliven_s/conda/bin/conda shell.bash hook 2> /dev/null)"'
+
