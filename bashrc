@@ -58,3 +58,4 @@ fi
 # Run host-specific bashrc
 # Running after the generic bashrc allows variables to be clobbered
 [ -e ~/.bashrc.local ] && source ~/.bashrc.local
+

@@ -90,7 +90,7 @@ git-completion.bash	.git-completion.bash
 zshrc	.zshrc
 bin	bin
 tmux	.tmux
-tmux/tmux.conf	.tmuxrc
+tmux/tmux.conf	.tmux.conf
 END
 
 #select the proper local profile
